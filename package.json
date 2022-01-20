@@ -1,0 +1,21 @@
+{
+  "name": "xrpl-test",
+  "version": "0.0.1",
+  "description": "XRPL Node Local",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "DEBUG=main* nodemon src/index.js",
+    "prod": "DEBUG=main* node src/index.js"
+  },
+  "author": "Lathan Britz",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^4.3.3",
+    "decimal.js": "^10.3.1",
+    "dotenv": "^12.0.3",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.15",
+    "xrpl": "^2.0.4",
+    "xrpl-client": "^1.9.2"
+  }
+}
