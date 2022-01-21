@@ -10,7 +10,6 @@ const db = require('./persist/db')
 class test {
 	constructor() {
 		const client = new XrplClient(['ws://192.168.0.19:6005'])
-		let totals = {}
 		
 		Object.assign(this, {
 			async run() {
@@ -18,56 +17,9 @@ class test {
 
 				const self = this
 				client.on('ledger', async (event) => {
-					// log(event)
 					self.getLedger(event)
 				})
-
-				// let ledger_result = await client.getState()
-				// log(ledger_result)
-
-				const serverInfo = await client.send({ command: "server_info" })
-				//log('state')
-				//log({ serverInfo })
 			},
-			isHex(string) {
-				var re = /[0-9A-Fa-f]{6}/g
-				const isValid = re.test(string) && !isNaN(parseInt(string, 16))
-				re.lastIndex = 0
-				return isValid
-			},
-			currencyCodeFormat(string, maxLength) {
-				if (typeof maxLength === 'undefined') maxLength = 4
-				if (!this.isHex(string)) {
-					if (string.length > maxLength) {
-						return string.slice(0, maxLength)
-					} else return string
-				}
-
-				var hex = string.toString()
-				var str = ''
-
-				// check for XLS15d
-				if (hex.startsWith('02')) {
-					try {
-						const binary = Buffer.from(hex, 'hex')
-						str = binary.slice(8).toString('utf-8');
-					} catch {
-						for (var n = 0; n < hex.length; n += 2) {
-							str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
-						}
-					}
-				} else {
-					for (var n = 0; n < hex.length; n += 2) {
-						str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
-					}
-				}
-
-				var trimmed = str.trim()
-				if (trimmed.length > maxLength) {
-					return trimmed.slice(0, maxLength)
-				} else return trimmed
-			},
-
 			async getLedger(event) {
 				let request = {
 					'id': 'xrpl-local',
@@ -89,7 +41,6 @@ class test {
 					const tx = transactions[i]
 					this.transactionTypes(tx)
 				}
-				//log(totals)
 			},
 			transactionTypes(transaction) {
 				switch (transaction.TransactionType) {
@@ -563,13 +514,9 @@ class test {
 					amount = transaction.Amount.value * 1
 					currency = this.currencyHexToUTF8(transaction.Amount.currency)
 					currency_hex = transaction.Amount.currency
-
-					this.total(transaction.Amount.value * 1, currency, currency_hex)
 				}
 				else {
 					amount = transaction.Amount / 1_000_000
-
-					this.total(amount, 'XRP', null)
 				}
 				
 				let destination_tag = ('DestinationTag' in transaction) ? transaction.DestinationTag : null
@@ -649,8 +596,6 @@ class test {
 					}
 				})
 
-				// logTx(taker_pays)
-				// logTx(taker_gets)
 				const queryString = `INSERT INTO OfferCancel (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, transaction_result, fee, created) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
 				const rows = await db.query(queryString)
@@ -787,14 +732,6 @@ class test {
 					issuer: amount.issuer,
 					value: new decimal(amount.value)
 				}
-			},
-			total(amount, currency, hex) {
-				if (totals[currency] == null) {
-					totals[currency] = {}
-				}
-				totals[currency]['amount'] = (totals[currency]['amount'] || 0) + (amount * 1)
-				totals[currency]['hex'] = hex
-				totals[currency]['currency'] = currency
 			},
 			currencyHexToUTF8(code) {
 				if (code.length === 3)
