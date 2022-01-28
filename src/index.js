@@ -525,7 +525,7 @@ class test {
 				let source_tag = ('SourceTag' in transaction) ? transaction.SourceTag : null
 				
 				const queryString = `INSERT INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, issuer, created)
-					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${transaction.Fee}', ' ${issuer}', '${unix_time}');`
+					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${issuer}', '${unix_time}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
