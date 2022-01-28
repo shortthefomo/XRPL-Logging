@@ -509,11 +509,13 @@ class test {
 				let amount = 0
 				let currency = 'XRP'
 				let currency_hex = currency
+				let issuer = undefined
 
 				if (typeof transaction.Amount == 'object') {
 					amount = transaction.Amount.value * 1
 					currency = this.currencyHexToUTF8(transaction.Amount.currency)
 					currency_hex = transaction.Amount.currency
+					issuer = transaction.Amount.issuer
 				}
 				else {
 					amount = transaction.Amount / 1_000_000
@@ -522,8 +524,8 @@ class test {
 				let destination_tag = ('DestinationTag' in transaction) ? transaction.DestinationTag : null
 				let source_tag = ('SourceTag' in transaction) ? transaction.SourceTag : null
 				
-				const queryString = `INSERT INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, created)
-					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, issuer, created)
+					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${transaction.Fee}', ' ${issuer}', '${unix_time}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
