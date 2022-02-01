@@ -9,7 +9,7 @@ const db = require('./persist/db')
 
 class test {
 	constructor() {
-		const client = new XrplClient(['ws://192.168.0.19:6005'])
+		const client = new XrplClient(['ws://192.168.0.19:6005', 'wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		
 		Object.assign(this, {
 			async run() {
