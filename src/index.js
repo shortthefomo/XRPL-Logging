@@ -12,9 +12,9 @@ class test {
 	constructor() {
 		let client = null
 		if (process.env.BACKFILLINDEX == undefined) {
-			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
-		} else {
 			client = new XrplClient(['ws://192.168.0.19:6005'])
+		} else {
+			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		}
 		let backFillIndex = 0
 
@@ -52,7 +52,7 @@ class test {
 				}
 
 				let ledger_result = await client.send(request)
-				//console.log(ledger_result)
+				console.log(ledger_result)
 				
 
 				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
