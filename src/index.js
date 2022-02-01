@@ -10,7 +10,12 @@ const db = require('./persist/db')
 
 class test {
 	constructor() {
-		const client = new XrplClient(['wss://xrplcluster.com'])
+		let client = null
+		if (process.env.BACKFILLINDEX == undefined) {
+			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+		} else {
+			client = new XrplClient(['ws://192.168.0.19:6005'])
+		}
 		let backFillIndex = 0
 
 		Object.assign(this, {
@@ -35,7 +40,7 @@ class test {
 			},
 			async getLedgerByIndex() {
 				log('get ledger by index: ' + backFillIndex)
-				backFillIndex++
+				backFillIndex--
 
 				let request = {
 					'id': 'xrpl-backfill',
