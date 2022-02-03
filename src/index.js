@@ -102,7 +102,7 @@ class test {
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
 					log('new adding transactions')
-					this.logTransactions(ledger_result.ledger.transactions, unix_time)
+					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
 			async logLedger(index, hash, unix_time) {
@@ -123,137 +123,137 @@ class test {
 				}
 				return true
 			},
-			logTransactions(transactions, unix_time) {
+			logTransactions(index, transactions, unix_time) {
 				// https://xrpl.org/transaction-types.html#transaction-types
 				for (let i = 0; i < transactions.length; i++) {
 					const transaction = transactions[i]
 					//log(transaction)
-					this.transactionTypes(transaction, unix_time)
+					this.transactionTypes(index, transaction, unix_time)
 				}
 			},
-			transactionTypes(transaction, unix_time) {
+			transactionTypes(index, transaction, unix_time) {
 				switch (transaction.TransactionType) {
 					case 'AccountSet':
 						// log('AccountSet')
-						this.logAccountSet(transaction, unix_time)
+						this.logAccountSet(index, transaction, unix_time)
 						break;
 					case 'AccountDelete':
 						// log('AccountDelete')
-						this.logAccountDelete(transaction, unix_time)
+						this.logAccountDelete(index, transaction, unix_time)
 						break;
 					case 'CheckCancel':
 						log('CheckCancel')
 						log(transaction)
-						this.logCheckCancel(transaction, unix_time)
+						this.logCheckCancel(index, transaction, unix_time)
 						break;
 					case 'CheckCash':
 						log('CheckCash')
 						log(transaction)
-						this.logCheckCash(transaction, unix_time)
+						this.logCheckCash(index, transaction, unix_time)
 						break;
 					case 'CheckCreate':
 						log('CheckCreate')
 						log(transaction)
-						this.logCheckCreate(transaction, unix_time)
+						this.logCheckCreate(index, transaction, unix_time)
 						break;
 					case 'DepositPreauth':
 						log('DepositPreauth')
 						log(transaction)
-						this.logDepositPreauth(transaction, unix_time)
+						this.logDepositPreauth(index, transaction, unix_time)
 						break;
 					case 'EscrowCancel':
 						log('EscrowCancel')
 						log(transaction)
-						this.logEscrowCancel(transaction, unix_time)
+						this.logEscrowCancel(index, transaction, unix_time)
 						break;
 					case 'EscrowCreate':
 						log('EscrowCreate')
 						log(transaction)
-						this.logEscrowCreate(transaction, unix_time)
+						this.logEscrowCreate(index, transaction, unix_time)
 						break;
 					case 'EscrowFinish':
 						log('EscrowFinish')
 						log(transaction)
-						this.logEscrowFinish(transaction, unix_time)
+						this.logEscrowFinish(index, transaction, unix_time)
 						break;
 					case 'OfferCancel':
-						this.logOfferCancel(transaction, unix_time)
+						this.logOfferCancel(index, transaction, unix_time)
 						break;
 					case 'OfferCreate':
-						this.logOfferCreate(transaction, unix_time)
+						this.logOfferCreate(index, transaction, unix_time)
 						break;
 					case 'Payment':
-						this.logPayment(transaction, unix_time)
+						this.logPayment(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelClaim':
-						this.logPaymentChannelClaim(transaction, unix_time)
+						this.logPaymentChannelClaim(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelCreate':
 						log('PaymentChannelCreate')
 						log(transaction)
-						this.logPaymentChannelCreate(transaction, unix_time)
+						this.logPaymentChannelCreate(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelFund':
 						log('PaymentChannelFund')
 						log(transaction)
-						this.logPaymentChannelFund(transaction, unix_time)
+						this.logPaymentChannelFund(index, transaction, unix_time)
 						break;
 					case 'SetRegularKey':
 						log('SetRegularKey')
-						this.logSetRegularKey(transaction, unix_time)
+						this.logSetRegularKey(index, transaction, unix_time)
 						break;
 					case 'SignerListSet':
 						log('SignerListSet')
 						log(transaction)
-						this.logSignerListSet(transaction, unix_time)
+						this.logSignerListSet(index, transaction, unix_time)
 						break;
 					case 'TicketCreate':
 						log('TicketCreate')
 						log(transaction)
-						this.logTicketCreate(transaction, unix_time)
+						this.logTicketCreate(index, transaction, unix_time)
 						break;
 					case 'TrustSet':
 						// log('TrustSet')
-						this.logTrustSet(transaction, unix_time)
+						this.logTrustSet(index, transaction, unix_time)
 						break;
 					case 'NFTokenMint':
 						log('NFTokenMint')
 						log(transaction)
-						this.logNFTokenMint(transaction, unix_time)
+						this.logNFTokenMint(index, transaction, unix_time)
 						break;
 					case 'NFTokenCreateOffer':
 						log('NFTokenCreateOffer')
 						log(transaction)
-						this.logNFTokenCreateOffer(transaction, unix_time)
+						this.logNFTokenCreateOffer(index, transaction, unix_time)
 						break;
 					case 'NFTokenCancelOffer':
 						log('NFTokenCancelOffer')
 						log(transaction)
-						this.logNFTokenCancelOffer(transaction, unix_time)
+						this.logNFTokenCancelOffer(index, transaction, unix_time)
 						break;
 					case 'NFTokenBurn':
 						log('NFTokenBurn')
 						log(transaction)
-						this.logNFTokenBurn(transaction, unix_time)
+						this.logNFTokenBurn(index, transaction, unix_time)
 						break;
 					case 'NFTokenAcceptOffer':
 						log('NFTokenAcceptOffer')
 						log(transaction)
-						this.logNFTokenAcceptOffer(transaction, unix_time)
+						this.logNFTokenAcceptOffer(index, transaction, unix_time)
 						break;
 					default:
 						log('Unknown payment type: ' + transaction.TransactionType)
 						break;
 				}
 			},
-			async logNFTokenMint(transaction, unix_time) {
+			async logNFTokenMint(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenMint')
 				logTx('NFTokenMint')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO NFTokenMint (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO NFTokenMint (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -262,14 +262,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logNFTokenCreateOffer(transaction, unix_time) {
+			async logNFTokenCreateOffer(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenCreateOffer')
 				logTx('NFTokenCreateOffer')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO NFTokenCreateOffer (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO NFTokenCreateOffer (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -278,14 +278,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logNFTokenCancelOffer(transaction, unix_time) {
+			async logNFTokenCancelOffer(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenCancelOffer')
 				logTx('NFTokenCancelOffer')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO NFTokenCancelOffer (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO NFTokenCancelOffer (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -294,14 +294,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logNFTokenBurn(transaction, unix_time) {
+			async logNFTokenBurn(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenBurn')
 				logTx('NFTokenBurn')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO NFTokenBurn (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO NFTokenBurn (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -310,14 +310,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logNFTokenAcceptOffer(transaction, unix_time) {
+			async logNFTokenAcceptOffer(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenAcceptOffer')
 				logTx('NFTokenAcceptOffer')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO NFTokenAcceptOffer (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO NFTokenAcceptOffer (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -326,14 +326,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logTicketCreate(transaction, unix_time) {
+			async logTicketCreate(index, transaction, unix_time) {
 				const logTx = debug('main:TicketCreate')
 				logTx('TicketCreate')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO TicketCreate (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO TicketCreate (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -342,14 +342,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logSignerListSet(transaction, unix_time) {
+			async logSignerListSet(index, transaction, unix_time) {
 				const logTx = debug('main:SignerListSet')
 				logTx('SignerListSet')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO SignerListSet (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO SignerListSet (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -358,14 +358,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logPaymentChannelFund(transaction, unix_time) {
+			async logPaymentChannelFund(index, transaction, unix_time) {
 				const logTx = debug('main:PaymentChannelFund')
 				logTx('PaymentChannelFund')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO PaymentChannelFund (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO PaymentChannelFund (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -374,14 +374,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logPaymentChannelCreate(transaction, unix_time) {
+			async logPaymentChannelCreate(index, transaction, unix_time) {
 				const logTx = debug('main:PaymentChannelCreate')
 				logTx('PaymentChannelCreate')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO PaymentChannelCreate (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO PaymentChannelCreate (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -390,14 +390,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logEscrowFinish(transaction, unix_time) {
+			async logEscrowFinish(index, transaction, unix_time) {
 				const logTx = debug('main:EscrowFinish')
 				logTx('EscrowFinish')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO EscrowFinish (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO EscrowFinish (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -406,14 +406,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logEscrowCreate(transaction, unix_time) {
+			async logEscrowCreate(index, transaction, unix_time) {
 				const logTx = debug('main:EscrowCreate')
 				logTx('EscrowCreate')
 
 				if (transaction == null) { return }
 				const amount = transaction.Amount / 1_000_000
-				const queryString = `INSERT INTO EscrowCreate (account, hash, amount, destination, finish_after, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${amount}', '${transaction.Destination}', '${transaction.FinishAfter}', '${transaction.metaData.TransactionResult}',' ${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO EscrowCreate (account, hash, amount, destination, finish_after, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${amount}', '${transaction.Destination}', '${transaction.FinishAfter}', '${transaction.metaData.TransactionResult}',' ${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -422,14 +422,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logEscrowCancel(transaction, unix_time) {
+			async logEscrowCancel(index, transaction, unix_time) {
 				const logTx = debug('main:EscrowCancel')
 				logTx('EscrowCancel')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO EscrowCancel (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO EscrowCancel (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -438,14 +438,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logDepositPreauth(transaction, unix_time) {
+			async logDepositPreauth(index, transaction, unix_time) {
 				const logTx = debug('main:DepositPreauth')
 				logTx('DepositPreauth')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO DepositPreauth (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO DepositPreauth (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -454,14 +454,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logCheckCreate(transaction, unix_time) {
+			async logCheckCreate(index, transaction, unix_time) {
 				const logTx = debug('main:CheckCreate')
 				logTx('CheckCreate')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO CheckCreate (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO CheckCreate (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -470,14 +470,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logCheckCash(transaction, unix_time) {
+			async logCheckCash(index, transaction, unix_time) {
 				const logTx = debug('main:CheckCash')
 				logTx('CheckCash')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO CheckCash (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO CheckCash (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -486,14 +486,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logCheckCancel(transaction, unix_time) {
+			async logCheckCancel(index, transaction, unix_time) {
 				const logTx = debug('main:CheckCancel')
 				logTx('CheckCancel')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO CheckCancel (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO CheckCancel (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -502,14 +502,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logSetRegularKey(transaction, unix_time) {
+			async logSetRegularKey(index, transaction, unix_time) {
 				const logTx = debug('main:SetRegularKey')
 				// logTx('SetRegularKey')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO SetRegularKey (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO SetRegularKey (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -518,14 +518,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logAccountSet(transaction, unix_time) {
+			async logAccountSet(index, transaction, unix_time) {
 				const logTx = debug('main:accountset')
 				// logTx('AccountSet')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO AccountSet (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO AccountSet (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -534,14 +534,14 @@ class test {
 					log(queryString)
 				}
 			},
-			async logAccountDelete(transaction, unix_time) {
+			async logAccountDelete(index, transaction, unix_time) {
 				const logTx = debug('main:AccountDelete')
 				// logTx('AccountDelete')
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT INTO AccountDelete (account, hash, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO AccountDelete (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -550,15 +550,15 @@ class test {
 					log(queryString)
 				}
 			},
-			async logTrustSet(transaction, unix_time) {
+			async logTrustSet(index, transaction, unix_time) {
 				const logTx = debug('main:TrustSet')
 				// logTx('TrustSet')
 
 				if (transaction == null) { return }
 				const currency = this.currencyHexToUTF8(transaction.LimitAmount.currency)
 
-				const queryString = `INSERT INTO TrustSet (account, hash, currency, currency_hex, issuer, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO TrustSet (account, hash, currency, currency_hex, issuer, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -567,7 +567,7 @@ class test {
 					log(queryString)
 				}
 			},
-			async logPayment(transaction, unix_time) {
+			async logPayment(index, transaction, unix_time) {
 				const logTx = debug('main:Payment')
 				// logTx('Payment')
 				// logTx(transaction)
@@ -579,22 +579,21 @@ class test {
 				let currency_hex = currency
 				let issuer = undefined
 
-				if (typeof transaction.meta.delivered_amount == 'object') {
-					amount = transaction.meta.delivered_amount.value * 1
-					currency = this.currencyHexToUTF8(transaction.meta.delivered_amount.currency)
-					currency_hex = transaction.meta.delivered_amount.currency
-					issuer = transaction.meta.delivered_amount.issuer
+				if (typeof transaction.metaData.delivered_amount == 'object') {
+					amount = transaction.metaData.delivered_amount.value * 1
+					currency = this.currencyHexToUTF8(transaction.metaData.delivered_amount.currency)
+					currency_hex = transaction.metaData.delivered_amount.currency
+					issuer = transaction.metaData.delivered_amount.issuer
 				}
-				else {
-					amount = transaction.meta.delivered_amount / 1_000_000
+				else if ('delivered_amount' in transaction.metaData) {
+					amount = transaction.metaData.delivered_amount / 1_000_000
 				}
 				
 				let destination_tag = ('DestinationTag' in transaction) ? transaction.DestinationTag : null
 				let source_tag = ('SourceTag' in transaction) ? transaction.SourceTag : null
 				
-				const queryString = `INSERT INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, issuer, created)
-					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${issuer}', '${unix_time}');`
-				//log(queryString)
+				const queryString = `INSERT INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, issuer, created, ledger)
+					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${issuer}', '${unix_time}', '${index}');`
 
 				const rows = await db.query(queryString)
 				if (rows == undefined) {
@@ -604,7 +603,7 @@ class test {
 
 				// pull out the path transactions 
 				if (transaction.metaData.TransactionResult == 'tesSUCCESS') {
-					this.deriveExchanges(transaction, unix_time)
+					this.deriveExchanges(index, transaction, unix_time)
 				}
 			},
 			async logPaymentChannelClaim(transaction, unix_time) {
@@ -617,8 +616,8 @@ class test {
 				const currency = this.currencyHexToUTF8(transaction.LimitAmount.currency)
 			
 
-				const queryString = `INSERT INTO PaymentChannelClaim (account, hash, currency, currency_hex, issuer, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO PaymentChannelClaim (account, hash, currency, currency_hex, issuer, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
 				const rows = await db.query(queryString)
@@ -627,7 +626,7 @@ class test {
 					log(queryString)
 				}
 			},
-			async logOfferCancel(transaction, unix_time) {
+			async logOfferCancel(index, transaction, unix_time) {
 				if (transaction == null) { return }
 
 				const logTx = debug('main:offercancel')
@@ -667,8 +666,8 @@ class test {
 					}
 				})
 
-				const queryString = `INSERT INTO OfferCancel (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO OfferCancel (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				const rows = await db.query(queryString)
 
 				//COME BACK TO THIS ONE
@@ -678,7 +677,7 @@ class test {
 				// 	log(transaction.metaData.AffectedNodes)
 				// }
 			},
-			async logOfferCreate(transaction, unix_time) {
+			async logOfferCreate(index, transaction, unix_time) {
 				if (transaction == null) { return }
 
 				const logTx = debug('main:offercreate')
@@ -715,8 +714,8 @@ class test {
 				// logTx(taker_pays)
 				// logTx(taker_gets)
 				const flags = 'Flags' in transaction ? transaction.Flags : 0
-				const queryString = `INSERT INTO OfferCreate (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, flags, transaction_result, fee, created) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${flags}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
+				const queryString = `INSERT INTO OfferCreate (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, flags, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${flags}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				const rows = await db.query(queryString)
 				if (rows == undefined) {
 					log('SQL Error')
@@ -725,10 +724,10 @@ class test {
 
 				// pull out the trades
 				if (transaction.metaData.TransactionResult == 'tesSUCCESS') {
-					this.deriveExchanges(transaction, unix_time)
+					this.deriveExchanges(index, transaction, unix_time)
 				}
 			},
-			async deriveExchanges(tx, unix_time){
+			async deriveExchanges(index, tx, unix_time){
 				let hash = tx.hash || tx.transaction.hash
 				let maker = tx.Account || tx.transaction.Account
 				let exchanges = []
@@ -778,8 +777,8 @@ class test {
 					}
 					exchanges.push(trade)
 
-					let query = `INSERT INTO DEXTrades (hash, maker, taker, sequence, base_currency, base_issuer, quote_currency, quote_issuer, price, volume, created) 
-						VALUES ('${trade.hash}', '${trade.maker}', '${trade.taker}', '${trade.sequence}', '${trade.base.currency}', '${trade.base.issuer}', '${trade.quote.currency}', '${trade.quote.issuer}', '${trade.price}', '${trade.volume}', '${unix_time}');`
+					let query = `INSERT INTO DEXTrades (hash, maker, taker, sequence, base_currency, base_issuer, quote_currency, quote_issuer, price, volume, created, ledger) 
+						VALUES ('${trade.hash}', '${trade.maker}', '${trade.taker}', '${trade.sequence}', '${trade.base.currency}', '${trade.base.issuer}', '${trade.quote.currency}', '${trade.quote.issuer}', '${trade.price}', '${trade.volume}', '${unix_time}', '${index}');`
 					const rows = await db.query(query)
 					if (rows == undefined) {
 						log('SQL Error')
