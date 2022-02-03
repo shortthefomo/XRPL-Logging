@@ -17,6 +17,7 @@ class test {
 			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		}
 		let backFillIndex = 0
+		let fillHoleIndexEnd = 0
 
 		Object.assign(this, {
 			async run() {
@@ -31,11 +32,30 @@ class test {
 				if (process.env.BACKFILLINDEX == undefined) {
 					log('backfill index is undefined')
 					return
+				} else {
+					backFillIndex = process.env.BACKFILLINDEX
 				}
-				backFillIndex = process.env.BACKFILLINDEX
+				
 				const self = this
 				setInterval(async function() {
 					self.getLedgerByIndex()
+				}, 500)
+			},
+			fillHole() {
+				if (process.env.FILLHOLESTART == undefined) {
+					log('fillholde index is undefined')
+					return
+				} 
+				backFillIndex = process.env.FILLHOLESTART
+				
+				
+				const self = this
+				let loop =  setInterval(async function() {
+					self.getLedgerByIndex()
+					if (process.env.FILLHOLEEND == backFillIndex) {
+						log('filled hole end')
+						clearInterval(loop)
+					}
 				}, 500)
 			},
 			async getLedgerByIndex() {
@@ -52,7 +72,7 @@ class test {
 				}
 
 				let ledger_result = await client.send(request)
-				console.log(ledger_result)
+				//console.log(ledger_result)
 				
 
 				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
@@ -559,14 +579,14 @@ class test {
 				let currency_hex = currency
 				let issuer = undefined
 
-				if (typeof transaction.Amount == 'object') {
-					amount = transaction.Amount.value * 1
-					currency = this.currencyHexToUTF8(transaction.Amount.currency)
-					currency_hex = transaction.Amount.currency
-					issuer = transaction.Amount.issuer
+				if (typeof transaction.meta.delivered_amount == 'object') {
+					amount = transaction.meta.delivered_amount.value * 1
+					currency = this.currencyHexToUTF8(transaction.meta.delivered_amount.currency)
+					currency_hex = transaction.meta.delivered_amount.currency
+					issuer = transaction.meta.delivered_amount.issuer
 				}
 				else {
-					amount = transaction.Amount / 1_000_000
+					amount = transaction.meta.delivered_amount / 1_000_000
 				}
 				
 				let destination_tag = ('DestinationTag' in transaction) ? transaction.DestinationTag : null
@@ -592,7 +612,10 @@ class test {
 				logTx('PaymentChannelClaim')
 
 				if (transaction == null) { return }
+				log(transaction)
+
 				const currency = this.currencyHexToUTF8(transaction.LimitAmount.currency)
+			
 
 				const queryString = `INSERT INTO PaymentChannelClaim (account, hash, currency, currency_hex, issuer, transaction_result, fee, created) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}');`
@@ -810,6 +833,9 @@ dotenv.config()
 console.log(process.env.BACKFILL )
 if (process.env.BACKFILL == 'true') {
 	main.backFill()
+} 
+else if (process.env.FILLHOLE == 'true') {
+	main.fillHole()
 } else {
 	main.run()
 }
