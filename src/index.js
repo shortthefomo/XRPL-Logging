@@ -12,8 +12,7 @@ class test {
 	constructor() {
 		let client = null
 		if (process.env.BACKFILLINDEX == undefined) {
-			//client = new XrplClient(['ws://192.168.0.19:6005'])
-			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+			client = new XrplClient(['ws://192.168.0.19:6005'], ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		} else {
 			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		}
