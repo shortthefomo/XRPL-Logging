@@ -12,7 +12,8 @@ class test {
 	constructor() {
 		let client = null
 		if (process.env.BACKFILLINDEX == undefined) {
-			client = new XrplClient(['ws://192.168.0.19:6005'])
+			//client = new XrplClient(['ws://192.168.0.19:6005'])
+			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		} else {
 			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		}
@@ -81,7 +82,7 @@ class test {
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
 					log('new adding transactions')
-					this.logTransactions(ledger_result.ledger.transactions, unix_time)
+					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
 			async getLedger(event) {
@@ -102,7 +103,7 @@ class test {
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
 					log('new adding transactions')
-					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
+					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
 			async logLedger(index, hash, unix_time) {
@@ -186,6 +187,7 @@ class test {
 						this.logPayment(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelClaim':
+						log('logPaymentChannelClaim')
 						this.logPaymentChannelClaim(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelCreate':
@@ -242,7 +244,7 @@ class test {
 						this.logNFTokenAcceptOffer(index, transaction, unix_time)
 						break;
 					default:
-						log('Unknown payment type: ' + transaction.TransactionType)
+						//log('Unknown payment type: ' + transaction.TransactionType)
 						break;
 				}
 			},
@@ -606,19 +608,15 @@ class test {
 					this.deriveExchanges(index, transaction, unix_time)
 				}
 			},
-			async logPaymentChannelClaim(transaction, unix_time) {
+			async logPaymentChannelClaim(index, transaction, unix_time) {
 				const logTx = debug('main:paymentchannelclaim')
 				logTx('PaymentChannelClaim')
 
 				if (transaction == null) { return }
-				log(transaction)
-
-				const currency = this.currencyHexToUTF8(transaction.LimitAmount.currency)
 			
-
-				const queryString = `INSERT INTO PaymentChannelClaim (account, hash, currency, currency_hex, issuer, transaction_result, fee, created, ledger) 
-					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
-				//log(queryString)
+				const queryString = `INSERT INTO PaymentChannelClaim (account, hash, transaction_result, fee, created, ledger) 
+					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
+				
 
 				const rows = await db.query(queryString)
 				if (rows == undefined) {
