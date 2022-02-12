@@ -186,6 +186,7 @@ class test {
 					//log(transaction)
 					this.transactionTypes(index, transaction, unix_time)
 				}
+				log('added ' + transactions.length + ' transactions')
 			},
 			transactionTypes(index, transaction, unix_time) {
 				switch (transaction.TransactionType) {
