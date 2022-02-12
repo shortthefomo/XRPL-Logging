@@ -10,14 +10,12 @@ const db = require('./persist/db')
 
 class test {
 	constructor() {
-		let client = null
-		if (process.env.BACKFILLINDEX == undefined) {
-			client = new XrplClient(['ws://192.168.0.19:6005'], ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
-		} else {
+		let client = new XrplClient(['ws://192.168.0.19:6005'], ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+		if (process.env.BACKFILL == 'true') {
+			log('using full histroy nodes for back fill.')
 			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		}
 		let backFillIndex = 0
-		let fillHoleIndexEnd = 0
 
 		Object.assign(this, {
 			async run() {
@@ -28,35 +26,93 @@ class test {
 					self.getLedger(event)
 				})
 			},
-			backFill() {
-				if (process.env.BACKFILLINDEX == undefined) {
-					log('backfill index is undefined')
-					return
-				} else {
-					backFillIndex = process.env.BACKFILLINDEX
+			async backFill() {
+				await client
+				const endResult = await db.query(`SELECT * FROM three.Ledger ORDER BY ledger_index ASC LIMIT 1;`)
+				if (endResult == undefined) {
+					return false
 				}
+				backFillIndex = endResult[0].ledger_index
 				
 				const self = this
 				setInterval(async function() {
 					self.getLedgerByIndex()
 				}, 500)
 			},
-			fillHole() {
-				if (process.env.FILLHOLESTART == undefined) {
-					log('fillholde index is undefined')
-					return
-				} 
-				backFillIndex = process.env.FILLHOLESTART
-				
-				
-				const self = this
-				let loop =  setInterval(async function() {
-					self.getLedgerByIndex()
-					if (process.env.FILLHOLEEND == backFillIndex) {
-						log('filled hole end')
-						clearInterval(loop)
+			async findMissingLedgers() {
+				// const start 
+				await client
+				const startResult = await db.query(`SELECT * FROM three.Ledger ORDER BY ledger_index DESC LIMIT 1;`)
+				if (startResult == undefined) {
+					return false
+				}
+				const ledgerStart = startResult[0].ledger_index
+
+				const endResult = await db.query(`SELECT * FROM three.Ledger ORDER BY ledger_index ASC LIMIT 1;`)
+				if (endResult == undefined) {
+					return false
+				}
+				const ledgerEnd = endResult[0].ledger_index
+				console.log({'start': ledgerStart, 'end': ledgerEnd})
+
+				const rows = await db.query(`SELECT
+					CONCAT(z.expected, IF(z.got-1>z.expected, CONCAT(' thru ',z.got-1), '')) AS missing
+				FROM (
+					SELECT
+					@rownum:=@rownum+1 AS expected,
+					IF(@rownum=ledger_index, 0, @rownum:=ledger_index) AS got
+					FROM
+					(SELECT @rownum:=0) AS a
+					JOIN Ledger
+					ORDER BY ledger_index
+					) AS z
+				WHERE z.got!=0;`)
+				if (rows == undefined) {
+					return false
+				}
+				// throw away 1 to ..... as we not fetching everything here.
+				rows.shift()
+				console.log(rows)
+				for (let index = 0; index < rows.length; index++) {
+					const element = rows[index]
+					console.log(element.missing.split(' thru '))
+					let start = element.missing.split(' thru ')[0]
+					let end = element.missing.split(' thru ')[1]
+
+					if (end == undefined) {
+						await this.fetchLedger(start)
 					}
-				}, 500)
+					else {
+						start = start * 1
+						end = end * 1
+						for (let j = start; j <= end; j++) {
+							await this.fetchLedger(j)
+						}
+					}
+				}
+			},
+			async fetchLedger(index) {
+				console.log('fetching ledger', index)
+				let request = {
+					'id': 'xrpl-backfill',
+					'command': 'ledger',
+					'ledger_index': index,
+					'transactions': true,
+					'expand': true,
+					'owner_funds': true
+				}
+
+				let ledger_result = await client.send(request)
+				
+
+				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
+				const unix_time = new Date(timestamp).toISOString().slice(0, 19).replace('T', ' ')
+
+				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
+				if (newLedger) {
+					log('new adding transactions')
+					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
+				}
 			},
 			async getLedgerByIndex() {
 				log('get ledger by index: ' + backFillIndex)
@@ -72,7 +128,7 @@ class test {
 				}
 
 				let ledger_result = await client.send(request)
-				//console.log(ledger_result)
+				// console.log(ledger_result)
 				
 
 				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
@@ -826,12 +882,11 @@ class test {
 
 const main = new test()
 dotenv.config()
-console.log(process.env.BACKFILL )
+//console.log(process.env.BACKFILL )
+
 if (process.env.BACKFILL == 'true') {
+	main.findMissingLedgers()
 	main.backFill()
-} 
-else if (process.env.FILLHOLE == 'true') {
-	main.fillHole()
 } else {
 	main.run()
 }
