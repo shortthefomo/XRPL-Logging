@@ -158,7 +158,7 @@ class test {
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
 					log('new adding transactions')
-					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
+					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
 			async logLedger(index, hash, unix_time) {
