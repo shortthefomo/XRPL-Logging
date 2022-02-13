@@ -36,7 +36,8 @@ class test {
 				
 				const self = this
 				setInterval(async function() {
-					self.getLedgerByIndex()
+					await self.fetchLedger(backFillIndex)
+					backFillIndex--
 				}, 500)
 			},
 			async findMissingLedgers() {
@@ -114,32 +115,6 @@ class test {
 					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
-			async getLedgerByIndex() {
-				log('get ledger by index: ' + backFillIndex)
-				backFillIndex--
-
-				let request = {
-					'id': 'xrpl-backfill',
-					'command': 'ledger',
-					'ledger_index': backFillIndex,
-					'transactions': true,
-					'expand': true,
-					'owner_funds': true
-				}
-
-				let ledger_result = await client.send(request)
-				// console.log(ledger_result)
-				
-
-				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
-				const unix_time = new Date(timestamp).toISOString().slice(0, 19).replace('T', ' ')
-
-				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
-				if (newLedger) {
-					log('new adding transactions')
-					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
-				}
-			},
 			async getLedger(event) {
 				let request = {
 					'id': 'xrpl-local',
@@ -179,125 +154,125 @@ class test {
 				}
 				return true
 			},
-			logTransactions(index, transactions, unix_time) {
+			async logTransactions(index, transactions, unix_time) {
 				// https://xrpl.org/transaction-types.html#transaction-types
 				for (let i = 0; i < transactions.length; i++) {
 					const transaction = transactions[i]
 					//log(transaction)
-					this.transactionTypes(index, transaction, unix_time)
+					await this.transactionTypes(index, transaction, unix_time)
 				}
 				log('added ' + transactions.length + ' transactions, ledger: ' + index)
 			},
-			transactionTypes(index, transaction, unix_time) {
+			async transactionTypes(index, transaction, unix_time) {
 				switch (transaction.TransactionType) {
 					case 'AccountSet':
 						// log('AccountSet')
-						this.logAccountSet(index, transaction, unix_time)
+						await this.logAccountSet(index, transaction, unix_time)
 						break;
 					case 'AccountDelete':
 						// log('AccountDelete')
-						this.logAccountDelete(index, transaction, unix_time)
+						await this.logAccountDelete(index, transaction, unix_time)
 						break;
 					case 'CheckCancel':
 						log('CheckCancel')
 						// log(transaction)
-						this.logCheckCancel(index, transaction, unix_time)
+						await this.logCheckCancel(index, transaction, unix_time)
 						break;
 					case 'CheckCash':
 						log('CheckCash')
 						// log(transaction)
-						this.logCheckCash(index, transaction, unix_time)
+						await this.logCheckCash(index, transaction, unix_time)
 						break;
 					case 'CheckCreate':
 						log('CheckCreate')
 						// log(transaction)
-						this.logCheckCreate(index, transaction, unix_time)
+						await this.logCheckCreate(index, transaction, unix_time)
 						break;
 					case 'DepositPreauth':
 						log('DepositPreauth')
 						// log(transaction)
-						this.logDepositPreauth(index, transaction, unix_time)
+						await this.logDepositPreauth(index, transaction, unix_time)
 						break;
 					case 'EscrowCancel':
 						log('EscrowCancel')
 						// log(transaction)
-						this.logEscrowCancel(index, transaction, unix_time)
+						await this.logEscrowCancel(index, transaction, unix_time)
 						break;
 					case 'EscrowCreate':
 						log('EscrowCreate')
 						// log(transaction)
-						this.logEscrowCreate(index, transaction, unix_time)
+						await this.logEscrowCreate(index, transaction, unix_time)
 						break;
 					case 'EscrowFinish':
 						log('EscrowFinish')
 						// log(transaction)
-						this.logEscrowFinish(index, transaction, unix_time)
+						await this.logEscrowFinish(index, transaction, unix_time)
 						break;
 					case 'OfferCancel':
-						this.logOfferCancel(index, transaction, unix_time)
+						await this.logOfferCancel(index, transaction, unix_time)
 						break;
 					case 'OfferCreate':
-						this.logOfferCreate(index, transaction, unix_time)
+						await this.logOfferCreate(index, transaction, unix_time)
 						break;
 					case 'Payment':
-						this.logPayment(index, transaction, unix_time)
+						await this.logPayment(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelClaim':
 						log('logPaymentChannelClaim')
-						this.logPaymentChannelClaim(index, transaction, unix_time)
+						await this.logPaymentChannelClaim(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelCreate':
 						log('PaymentChannelCreate')
 						// log(transaction)
-						this.logPaymentChannelCreate(index, transaction, unix_time)
+						await this.logPaymentChannelCreate(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelFund':
 						log('PaymentChannelFund')
 						// log(transaction)
-						this.logPaymentChannelFund(index, transaction, unix_time)
+						await this.logPaymentChannelFund(index, transaction, unix_time)
 						break;
 					case 'SetRegularKey':
 						log('SetRegularKey')
-						this.logSetRegularKey(index, transaction, unix_time)
+						await this.logSetRegularKey(index, transaction, unix_time)
 						break;
 					case 'SignerListSet':
 						log('SignerListSet')
 						// log(transaction)
-						this.logSignerListSet(index, transaction, unix_time)
+						await this.logSignerListSet(index, transaction, unix_time)
 						break;
 					case 'TicketCreate':
 						log('TicketCreate')
 						// log(transaction)
-						this.logTicketCreate(index, transaction, unix_time)
+						await this.logTicketCreate(index, transaction, unix_time)
 						break;
 					case 'TrustSet':
 						// log('TrustSet')
-						this.logTrustSet(index, transaction, unix_time)
+						await this.logTrustSet(index, transaction, unix_time)
 						break;
 					case 'NFTokenMint':
 						log('NFTokenMint')
 						// log(transaction)
-						this.logNFTokenMint(index, transaction, unix_time)
+						await this.logNFTokenMint(index, transaction, unix_time)
 						break;
 					case 'NFTokenCreateOffer':
 						log('NFTokenCreateOffer')
 						// log(transaction)
-						this.logNFTokenCreateOffer(index, transaction, unix_time)
+						await this.logNFTokenCreateOffer(index, transaction, unix_time)
 						break;
 					case 'NFTokenCancelOffer':
 						log('NFTokenCancelOffer')
 						// log(transaction)
-						this.logNFTokenCancelOffer(index, transaction, unix_time)
+						await this.logNFTokenCancelOffer(index, transaction, unix_time)
 						break;
 					case 'NFTokenBurn':
 						log('NFTokenBurn')
 						// log(transaction)
-						this.logNFTokenBurn(index, transaction, unix_time)
+						await this.logNFTokenBurn(index, transaction, unix_time)
 						break;
 					case 'NFTokenAcceptOffer':
 						log('NFTokenAcceptOffer')
 						// log(transaction)
-						this.logNFTokenAcceptOffer(index, transaction, unix_time)
+						await this.logNFTokenAcceptOffer(index, transaction, unix_time)
 						break;
 					default:
 						//log('Unknown payment type: ' + transaction.TransactionType)
@@ -886,7 +861,7 @@ dotenv.config()
 //console.log(process.env.BACKFILL )
 
 if (process.env.BACKFILL == 'true') {
-	main.findMissingLedgers()
+	// /main.findMissingLedgers()
 	main.backFill()
 } else {
 	main.run()
