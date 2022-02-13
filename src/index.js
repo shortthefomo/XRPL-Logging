@@ -200,37 +200,37 @@ class test {
 						break;
 					case 'CheckCancel':
 						log('CheckCancel')
-						log(transaction)
+						// log(transaction)
 						this.logCheckCancel(index, transaction, unix_time)
 						break;
 					case 'CheckCash':
 						log('CheckCash')
-						log(transaction)
+						// log(transaction)
 						this.logCheckCash(index, transaction, unix_time)
 						break;
 					case 'CheckCreate':
 						log('CheckCreate')
-						log(transaction)
+						// log(transaction)
 						this.logCheckCreate(index, transaction, unix_time)
 						break;
 					case 'DepositPreauth':
 						log('DepositPreauth')
-						log(transaction)
+						// log(transaction)
 						this.logDepositPreauth(index, transaction, unix_time)
 						break;
 					case 'EscrowCancel':
 						log('EscrowCancel')
-						log(transaction)
+						// log(transaction)
 						this.logEscrowCancel(index, transaction, unix_time)
 						break;
 					case 'EscrowCreate':
 						log('EscrowCreate')
-						log(transaction)
+						// log(transaction)
 						this.logEscrowCreate(index, transaction, unix_time)
 						break;
 					case 'EscrowFinish':
 						log('EscrowFinish')
-						log(transaction)
+						// log(transaction)
 						this.logEscrowFinish(index, transaction, unix_time)
 						break;
 					case 'OfferCancel':
@@ -248,12 +248,12 @@ class test {
 						break;
 					case 'PaymentChannelCreate':
 						log('PaymentChannelCreate')
-						log(transaction)
+						// log(transaction)
 						this.logPaymentChannelCreate(index, transaction, unix_time)
 						break;
 					case 'PaymentChannelFund':
 						log('PaymentChannelFund')
-						log(transaction)
+						// log(transaction)
 						this.logPaymentChannelFund(index, transaction, unix_time)
 						break;
 					case 'SetRegularKey':
@@ -262,12 +262,12 @@ class test {
 						break;
 					case 'SignerListSet':
 						log('SignerListSet')
-						log(transaction)
+						// log(transaction)
 						this.logSignerListSet(index, transaction, unix_time)
 						break;
 					case 'TicketCreate':
 						log('TicketCreate')
-						log(transaction)
+						// log(transaction)
 						this.logTicketCreate(index, transaction, unix_time)
 						break;
 					case 'TrustSet':
@@ -276,27 +276,27 @@ class test {
 						break;
 					case 'NFTokenMint':
 						log('NFTokenMint')
-						log(transaction)
+						// log(transaction)
 						this.logNFTokenMint(index, transaction, unix_time)
 						break;
 					case 'NFTokenCreateOffer':
 						log('NFTokenCreateOffer')
-						log(transaction)
+						// log(transaction)
 						this.logNFTokenCreateOffer(index, transaction, unix_time)
 						break;
 					case 'NFTokenCancelOffer':
 						log('NFTokenCancelOffer')
-						log(transaction)
+						// log(transaction)
 						this.logNFTokenCancelOffer(index, transaction, unix_time)
 						break;
 					case 'NFTokenBurn':
 						log('NFTokenBurn')
-						log(transaction)
+						// log(transaction)
 						this.logNFTokenBurn(index, transaction, unix_time)
 						break;
 					case 'NFTokenAcceptOffer':
 						log('NFTokenAcceptOffer')
-						log(transaction)
+						// log(transaction)
 						this.logNFTokenAcceptOffer(index, transaction, unix_time)
 						break;
 					default:
