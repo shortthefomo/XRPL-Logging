@@ -13,7 +13,7 @@ class test {
 		let client = new XrplClient(['ws://192.168.0.19:6005'], ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		if (process.env.BACKFILL == 'true') {
 			log('using full histroy nodes for back fill.')
-			client = new XrplClient(['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+			client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
 		}
 		let backFillIndex = 0
 
@@ -35,10 +35,10 @@ class test {
 				backFillIndex = endResult[0].ledger_index
 				
 				const self = this
-				setInterval(async function() {
+				while (backFillIndex > 0) {
 					await self.fetchLedger(backFillIndex)
 					backFillIndex--
-				}, 500)
+				}
 			},
 			async findMissingLedgers() {
 				// const start 
@@ -73,7 +73,7 @@ class test {
 				}
 				// throw away 1 to ..... as we not fetching everything here.
 				rows.shift()
-				console.log(rows)
+				// console.log(rows)
 				for (let index = 0; index < rows.length; index++) {
 					const element = rows[index]
 					console.log(element.missing.split(' thru '))
@@ -111,7 +111,7 @@ class test {
 
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
-					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
+					await this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
 			async getLedger(event) {
@@ -131,7 +131,7 @@ class test {
 
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
-					this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
+					await this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
 			async logLedger(index, hash, unix_time) {
@@ -692,7 +692,7 @@ class test {
 						}
 					}
 				})
-
+				
 				const queryString = `INSERT INTO OfferCancel (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				const rows = await db.query(queryString)
@@ -858,9 +858,13 @@ const main = new test()
 dotenv.config()
 //console.log(process.env.BACKFILL )
 
-if (process.env.BACKFILL == 'true') {
-	// /main.findMissingLedgers()
-	main.backFill()
-} else {
-	main.run()
-}
+main.findMissingLedgers()
+main.backFill()
+
+
+// if (process.env.BACKFILL == 'true') {
+// 	main.findMissingLedgers()
+// 	main.backFill()
+// } else {
+// 	main.run()
+// }
