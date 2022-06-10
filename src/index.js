@@ -10,7 +10,7 @@ const db = require('./persist/db')
 
 class test {
 	constructor() {
-		let client = new XrplClient(['ws://192.168.0.19:6005'], ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+		let client = new XrplClient(['wss://panicbox.xzy:6005'], ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		if (process.env.BACKFILL == 'true') {
 			log('using full histroy nodes for back fill.')
 			client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
