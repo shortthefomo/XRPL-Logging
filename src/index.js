@@ -10,7 +10,7 @@ const db = require('./persist/db')
 
 class test {
 	constructor() {
-		let client = new XrplClient(['wss://panicbox.xzy:6005', 'wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+		let client = new XrplClient([process.env.LOCAL_NODE, 'wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
 		if (process.env.BACKFILL == 'true') {
 			log('using full histroy nodes for back fill.')
 			client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
@@ -140,7 +140,7 @@ class test {
 
 				if (index == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO Ledger (ledger_index, hash, created) 
+				const queryString = `INSERT INTO Ledger (ledger_index, hash, created) 
 					VALUES('${index}', '${hash}', '${unix_time}');`
 				//log(queryString)
 
@@ -283,7 +283,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO NFTokenMint (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO NFTokenMint (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -299,7 +299,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO NFTokenCreateOffer (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO NFTokenCreateOffer (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -315,7 +315,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO NFTokenCancelOffer (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO NFTokenCancelOffer (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -331,7 +331,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO NFTokenBurn (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO NFTokenBurn (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -347,7 +347,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO NFTokenAcceptOffer (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO NFTokenAcceptOffer (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -363,7 +363,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO TicketCreate (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO TicketCreate (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -379,7 +379,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO SignerListSet (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO SignerListSet (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -411,7 +411,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO PaymentChannelCreate (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO PaymentChannelCreate (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -427,7 +427,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO EscrowFinish (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO EscrowFinish (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -443,7 +443,7 @@ class test {
 
 				if (transaction == null) { return }
 				const amount = transaction.Amount / 1_000_000
-				const queryString = `INSERT HIGH_PRIORITY INTO EscrowCreate (account, hash, amount, destination, finish_after, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO EscrowCreate (account, hash, amount, destination, finish_after, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${amount}', '${transaction.Destination}', '${transaction.FinishAfter}', '${transaction.metaData.TransactionResult}',' ${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -459,7 +459,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO EscrowCancel (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO EscrowCancel (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -475,7 +475,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO DepositPreauth (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO DepositPreauth (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -491,7 +491,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO CheckCreate (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO CheckCreate (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -507,7 +507,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO CheckCash (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO CheckCash (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -523,7 +523,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO CheckCancel (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO CheckCancel (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -539,7 +539,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO SetRegularKey (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO SetRegularKey (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -555,7 +555,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO AccountSet (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO AccountSet (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -571,7 +571,7 @@ class test {
 
 				if (transaction == null) { return }
 
-				const queryString = `INSERT HIGH_PRIORITY INTO AccountDelete (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO AccountDelete (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -588,7 +588,7 @@ class test {
 				if (transaction == null) { return }
 				const currency = this.currencyHexToUTF8(transaction.LimitAmount.currency)
 
-				const queryString = `INSERT HIGH_PRIORITY INTO TrustSet (account, hash, currency, currency_hex, issuer, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO TrustSet (account, hash, currency, currency_hex, issuer, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${currency}', '${transaction.LimitAmount.currency}', '${transaction.LimitAmount.issuer}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				//log(queryString)
 
@@ -623,7 +623,7 @@ class test {
 				let destination_tag = ('DestinationTag' in transaction) ? transaction.DestinationTag : null
 				let source_tag = ('SourceTag' in transaction) ? transaction.SourceTag : null
 				
-				const queryString = `INSERT HIGH_PRIORITY INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, issuer, created, ledger)
+				const queryString = `INSERT INTO Payment (account, destination, amount, currency, currency_hex, hash, destination_tag, source_tag, transaction_result, fee, issuer, created, ledger)
 					VALUES('${transaction.Account}', '${transaction.Destination}', '${amount * 1}', '${currency}', '${currency_hex}', '${transaction.hash}', '${destination_tag}', '${source_tag}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${issuer}', '${unix_time}', '${index}');`
 
 				const rows = await db.query(queryString)
@@ -643,7 +643,7 @@ class test {
 
 				if (transaction == null) { return }
 			
-				const queryString = `INSERT HIGH_PRIORITY INTO PaymentChannelClaim (account, hash, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO PaymentChannelClaim (account, hash, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				
 
@@ -693,7 +693,7 @@ class test {
 					}
 				})
 				
-				const queryString = `INSERTHIGH_PRIORITY INTO OfferCancel (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO OfferCancel (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				const rows = await db.query(queryString)
 
@@ -741,7 +741,7 @@ class test {
 				// logTx(taker_pays)
 				// logTx(taker_gets)
 				const flags = 'Flags' in transaction ? transaction.Flags : 0
-				const queryString = `INSERT HIGH_PRIORITY INTO OfferCreate (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, flags, transaction_result, fee, created, ledger) 
+				const queryString = `INSERT INTO OfferCreate (account, hash, taker_gets_currency, taker_gets_currency_hex, taker_gets_issuer, taker_gets_amount, taker_pays_currency, taker_pays_currency_hex, taker_pays_issuer, taker_pays_amount, flags, transaction_result, fee, created, ledger) 
 					VALUES('${transaction.Account}', '${transaction.hash}', '${taker_gets.currency}', '${taker_gets.currency_hex}', '${taker_gets.issuer}', '${taker_gets.amount}', '${taker_pays.currency}', '${taker_pays.currency_hex}', '${taker_pays.issuer}', '${taker_pays.amount}', '${flags}', '${transaction.metaData.TransactionResult}', '${transaction.Fee}', '${unix_time}', '${index}');`
 				const rows = await db.query(queryString)
 				if (rows == undefined) {
