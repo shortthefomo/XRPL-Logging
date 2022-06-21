@@ -858,13 +858,10 @@ const main = new test()
 dotenv.config()
 //console.log(process.env.BACKFILL )
 
-main.findMissingLedgers()
-main.backFill()
 
-
-// if (process.env.BACKFILL == 'true') {
-// 	main.findMissingLedgers()
-// 	main.backFill()
-// } else {
-// 	main.run()
-// }
+if (process.env.BACKFILL == 'true') {
+	main.findMissingLedgers()
+	main.backFill()
+} else {
+	main.run()
+}
