@@ -157,13 +157,15 @@ class test {
 						if ('ModifiedNode' in item) {
 							if ('FinalFields' in item.ModifiedNode) {
 								if ('Balance' in item.ModifiedNode.FinalFields) {
-									let BalanceData = { 
-										'account' : item.ModifiedNode.FinalFields.Account, 
-										'Balance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
-									}
-	
-									if (BalanceData.account == transaction.Account || BalanceData.account == transaction.Destination) {
-										const result = await db.query(`INSERT INTO Balances (address, amount) VALUES('${BalanceData.account}', ${BalanceData.balance}) ON DUPLICATE KEY UPDATE address='${BalanceData.account}', amount=${BalanceData.balance};`)
+									if (item.ModifiedNode.FinalFields.Balance != 'object') {
+										let BalanceData = { 
+											'account' : item.ModifiedNode.FinalFields.Account, 
+											'Balance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
+										}
+		
+										if (BalanceData.account == transaction.Account || BalanceData.account == transaction.Destination) {
+											const result = await db.query(`INSERT INTO Balances (address, amount) VALUES('${BalanceData.account}', ${BalanceData.balance}) ON DUPLICATE KEY UPDATE address='${BalanceData.account}', amount=${BalanceData.balance};`)
+										}
 									}
 								}
 							}
