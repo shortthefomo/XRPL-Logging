@@ -156,13 +156,15 @@ class test {
 					transaction.metaData.AffectedNodes.forEach(async function (item, index) {
 						if ('ModifiedNode' in item) {
 							if ('FinalFields' in item.ModifiedNode) {
-								let BallanceData = { 
-									'account' : item.ModifiedNode.FinalFields.Account, 
-									'ballance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
-								}
-
-								if (BallanceData.account == transaction.Account || BallanceData.account == transaction.Destination) {
-									const result = await db.query(`INSERT INTO Balances (address, amount) VALUES('${BallanceData.account}', ${BallanceData.ballance}) ON DUPLICATE KEY UPDATE address='${BallanceData.account}', amount=${BallanceData.ballance};`)
+								if ('Balance' in item.ModifiedNode.FinalFields) {
+									let BalanceData = { 
+										'account' : item.ModifiedNode.FinalFields.Account, 
+										'Balance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
+									}
+	
+									if (BalanceData.account == transaction.Account || BalanceData.account == transaction.Destination) {
+										const result = await db.query(`INSERT INTO Balances (address, amount) VALUES('${BalanceData.account}', ${BalanceData.balance}) ON DUPLICATE KEY UPDATE address='${BalanceData.account}', amount=${BalanceData.balance};`)
+									}
 								}
 							}
 						}
