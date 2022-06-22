@@ -859,9 +859,12 @@ dotenv.config()
 //console.log(process.env.BACKFILL )
 
 if (process.env.MISSING == 'true') {
+	log('Filling missing ledgers')
 	main.findMissingLedgers()
 } else if (process.env.BACKFILL == 'true') {
+	log('Backfilling ledgers')
 	main.backFill()
 } else {
+	log('Fetching new ledgers')
 	main.run()
 }
