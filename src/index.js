@@ -136,7 +136,7 @@ class test {
 			},
 			async logLedger(index, hash, unix_time) {
 				const logTx = debug('main:logLedger')
-				logTx('logLedger')
+				// logTx('logLedger')
 
 				if (index == null) { return }
 
@@ -858,9 +858,9 @@ const main = new test()
 dotenv.config()
 //console.log(process.env.BACKFILL )
 
-
-if (process.env.BACKFILL == 'true') {
+if (process.env.MISSING == 'true') {
 	main.findMissingLedgers()
+} else if (process.env.BACKFILL == 'true') {
 	main.backFill()
 } else {
 	main.run()
