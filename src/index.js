@@ -156,7 +156,11 @@ class test {
 					transaction.metaData.AffectedNodes.forEach(async function (item, index) {
 						if ('ModifiedNode' in item) {
 							if ('FinalFields' in item.ModifiedNode) {
-								let BallanceData = { 'account' : item.ModifiedNode.FinalFields.Account, 'ballance' : ((item.ModifiedNode.FinalFields.Balance) / 1000000)}
+								let BallanceData = { 
+									'account' : item.ModifiedNode.FinalFields.Account, 
+									'ballance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
+								}
+
 								if (BallanceData.account == transaction.Account || BallanceData.account == transaction.Destination) {
 									const result = await db.query(`INSERT INTO Balances (address, amount) VALUES('${BallanceData.account}', ${BallanceData.ballance}) ON DUPLICATE KEY UPDATE address='${BallanceData.account}', amount=${BallanceData.ballance};`)
 								}
@@ -663,13 +667,13 @@ class test {
 				let issuer = undefined
 
 				if (typeof transaction.metaData.delivered_amount == 'object') {
-					amount = transaction.metaData.delivered_amount.value * 1
+					amount = decimal.div(transaction.metaData.delivered_amount.value, '1000000').toFixed()
 					currency = this.currencyHexToUTF8(transaction.metaData.delivered_amount.currency)
 					currency_hex = transaction.metaData.delivered_amount.currency
 					issuer = transaction.metaData.delivered_amount.issuer
 				}
 				else if ('delivered_amount' in transaction.metaData) {
-					amount = transaction.metaData.delivered_amount / 1_000_000
+					amount = decimal.div(transaction.metaData.delivered_amount, '1000000').toFixed()
 				}
 				
 				let destination_tag = ('DestinationTag' in transaction) ? transaction.DestinationTag : null
@@ -854,7 +858,7 @@ class test {
 							currency: this.currencyHexToUTF8(takerGot.currency), 
 							issuer: takerGot.issuer
 						},
-						price: takerGot.value.div(takerPaid.value),
+						price: takerGot.value.div(takerPaid.value).toFixed(),
 						volume: takerPaid.value
 					}
 					exchanges.push(trade)
