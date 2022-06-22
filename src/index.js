@@ -23,7 +23,7 @@ class test {
 
 				const self = this
 				client.on('ledger', async (event) => {
-					self.getLedger(event)
+					self.getLedger(event, true)
 				})
 			},
 			async backFill() {
@@ -114,7 +114,7 @@ class test {
 					await this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
 				}
 			},
-			async getLedger(event) {
+			async getLedger(event, watch_balances = false) {
 				let request = {
 					'id': 'xrpl-local',
 					'command': 'ledger',
@@ -132,6 +132,25 @@ class test {
 				const newLedger = await this.logLedger(ledger_result.ledger.ledger_index, ledger_result.ledger.hash, unix_time)
 				if (newLedger) {
 					await this.logTransactions(ledger_result.ledger.ledger_index, ledger_result.ledger.transactions, unix_time)
+				}
+
+				if (watch_balances)  {
+					this.updateBalances(ledger_result.ledger.transactions)
+				}
+			},
+			updateBalances(transactions) {
+				for (let i = 0; i < transactions.length; i++) {
+					const transaction = transactions[i]
+					transaction.metaData.AffectedNodes.forEach(async function (item, index) {
+						if ('ModifiedNode' in item) {
+							if ('FinalFields' in item.ModifiedNode) {
+								let BallanceData = { 'account' : item.ModifiedNode.FinalFields.Account, 'ballance' : ((item.ModifiedNode.FinalFields.Balance) / 1000000)}
+								if (BallanceData.account == transaction.Account || BallanceData.account == transaction.Destination) {
+									const result = await db.query(`INSERT INTO Balances (address, amount) VALUES('${BallanceData.account}', ${BallanceData.ballance}) ON DUPLICATE KEY UPDATE address='${BallanceData.account}', amount=${BallanceData.ballance};`)
+								}
+							}
+						}
+					})
 				}
 			},
 			async logLedger(index, hash, unix_time) {
@@ -240,7 +259,7 @@ class test {
 						break;
 					case 'TicketCreate':
 						log('TicketCreate')
-						// log(transaction)
+						// log(transaction. Account, transaction.metaData)
 						await this.logTicketCreate(index, transaction, unix_time)
 						break;
 					case 'TrustSet':
