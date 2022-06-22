@@ -33,6 +33,7 @@ class test {
 				setInterval(async () => {
 					while(retry.length > 0) {
 						const retry_query = retry.pop()
+						log('retry_query', retry_query)
 						await db.query(retry_query)
 					}
 				}, 600000)
