@@ -157,7 +157,7 @@ class test {
 						if ('ModifiedNode' in item) {
 							if ('FinalFields' in item.ModifiedNode) {
 								if ('Balance' in item.ModifiedNode.FinalFields) {
-									if (item.ModifiedNode.FinalFields.Balance != 'object') {
+									if (typeof item.ModifiedNode.FinalFields.Balance != 'object') {
 										let BalanceData = { 
 											'account' : item.ModifiedNode.FinalFields.Account, 
 											'Balance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
