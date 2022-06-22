@@ -7,6 +7,7 @@ const decimal = require('decimal.js')
 const log = debug('main:test')
 
 const db = require('./persist/db')
+const { setInterval } = require('timers')
 
 class test {
 	constructor() {
@@ -16,6 +17,7 @@ class test {
 			client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
 		}
 		let backFillIndex = 0
+		let retry = []
 
 		Object.assign(this, {
 			async run() {
@@ -25,6 +27,15 @@ class test {
 				client.on('ledger', async (event) => {
 					self.getLedger(event, true)
 				})
+			},
+			reTry() {
+				// every 10 min try reinsert failed
+				setInterval(async () => {
+					while(retry.length > 0) {
+						const retry_query = retry.pop()
+						await db.query(retry_query)
+					}
+				}, 600000)
 			},
 			async backFill() {
 				await client
@@ -167,6 +178,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 					return false
 				}
 				return true
@@ -310,6 +322,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logNFTokenCreateOffer(index, transaction, unix_time) {
@@ -326,6 +339,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logNFTokenCancelOffer(index, transaction, unix_time) {
@@ -342,6 +356,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logNFTokenBurn(index, transaction, unix_time) {
@@ -358,6 +373,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logNFTokenAcceptOffer(index, transaction, unix_time) {
@@ -374,6 +390,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logTicketCreate(index, transaction, unix_time) {
@@ -390,6 +407,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logSignerListSet(index, transaction, unix_time) {
@@ -406,6 +424,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logPaymentChannelFund(index, transaction, unix_time) {
@@ -422,6 +441,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logPaymentChannelCreate(index, transaction, unix_time) {
@@ -438,6 +458,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logEscrowFinish(index, transaction, unix_time) {
@@ -454,6 +475,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logEscrowCreate(index, transaction, unix_time) {
@@ -470,6 +492,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logEscrowCancel(index, transaction, unix_time) {
@@ -486,6 +509,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logDepositPreauth(index, transaction, unix_time) {
@@ -502,6 +526,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logCheckCreate(index, transaction, unix_time) {
@@ -518,6 +543,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logCheckCash(index, transaction, unix_time) {
@@ -534,6 +560,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logCheckCancel(index, transaction, unix_time) {
@@ -550,6 +577,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logSetRegularKey(index, transaction, unix_time) {
@@ -566,6 +594,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logAccountSet(index, transaction, unix_time) {
@@ -582,6 +611,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logAccountDelete(index, transaction, unix_time) {
@@ -598,6 +628,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logTrustSet(index, transaction, unix_time) {
@@ -615,6 +646,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logPayment(index, transaction, unix_time) {
@@ -649,6 +681,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 
 				// pull out the path transactions 
@@ -670,6 +703,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 			},
 			async logOfferCancel(index, transaction, unix_time) {
@@ -766,6 +800,7 @@ class test {
 				if (rows == undefined) {
 					log('SQL Error')
 					log(queryString)
+					retry.push(queryString)
 				}
 
 				// pull out the trades
@@ -823,12 +858,13 @@ class test {
 					}
 					exchanges.push(trade)
 
-					let query = `INSERT HIGH_PRIORITY INTO DEXTrades (hash, maker, taker, sequence, base_currency, base_issuer, quote_currency, quote_issuer, price, volume, created, ledger) 
+					let queryString = `INSERT HIGH_PRIORITY INTO DEXTrades (hash, maker, taker, sequence, base_currency, base_issuer, quote_currency, quote_issuer, price, volume, created, ledger) 
 						VALUES ('${trade.hash}', '${trade.maker}', '${trade.taker}', '${trade.sequence}', '${trade.base.currency}', '${trade.base.issuer}', '${trade.quote.currency}', '${trade.quote.issuer}', '${trade.price}', '${trade.volume}', '${unix_time}', '${index}');`
-					const rows = await db.query(query)
+					const rows = await db.query(queryString)
 					if (rows == undefined) {
 						log('SQL Error')
-						log(query)
+						log(queryString)
+						retry.push(queryString)
 					}
 				}
 			
@@ -887,3 +923,5 @@ if (process.env.MISSING == 'true') {
 	log('Fetching new ledgers')
 	main.run()
 }
+
+main.reTry()
