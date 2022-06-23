@@ -160,7 +160,7 @@ class test {
 									if (typeof item.ModifiedNode.FinalFields.Balance != 'object') {
 										let BalanceData = { 
 											'account' : item.ModifiedNode.FinalFields.Account, 
-											'Balance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
+											'balance' : decimal.div(item.ModifiedNode.FinalFields.Balance, '1000000').toFixed()
 										}
 		
 										if (BalanceData.account == transaction.Account || BalanceData.account == transaction.Destination) {
