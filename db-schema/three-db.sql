@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `three` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `three`;
 -- MySQL dump 10.13  Distrib 8.0.25, for macos11 (x86_64)
 --
 -- Host: 192.168.0.19    Database: three
@@ -32,7 +34,7 @@ CREATE TABLE `AccountDelete` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=200218 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=201520 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +54,23 @@ CREATE TABLE `AccountSet` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=329568 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=331572 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Balances`
+--
+
+DROP TABLE IF EXISTS `Balances`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Balances` (
+  `address` varchar(128) NOT NULL,
+  `amount` decimal(25,10) DEFAULT NULL,
+  `modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`address`),
+  KEY `idx_address` (`address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +165,7 @@ CREATE TABLE `DEXTrades` (
   KEY `quote_issuer_idx` (`quote_issuer`),
   KEY `created_idx` (`created`),
   KEY `created_desc_idx` (`created` DESC)
-) ENGINE=InnoDB AUTO_INCREMENT=13885712 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14005458 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -227,7 +245,7 @@ CREATE TABLE `DEXTrades_mvl` (
   KEY `created_idx` (`created`),
   KEY `created_desc_idx` (`created` DESC),
   KEY `record_ts_idx` (`record_ts`)
-) ENGINE=InnoDB AUTO_INCREMENT=203 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=299 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,7 +285,7 @@ CREATE TABLE `EscrowCancel` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=298 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,7 +308,7 @@ CREATE TABLE `EscrowCreate` (
   `finish_after` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=4872 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4921 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,7 +328,7 @@ CREATE TABLE `EscrowFinish` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=2264 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2277 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -485,7 +503,7 @@ CREATE TABLE `OfferCancel` (
   `fee` int DEFAULT NULL,
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44693552 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45445385 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -513,7 +531,7 @@ CREATE TABLE `OfferCreate` (
   `fee` int DEFAULT NULL,
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=363532657 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=367961814 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -552,7 +570,7 @@ CREATE TABLE `Payment` (
   KEY `currency_hex_idx` (`currency_hex`),
   KEY `created_desc_idx` (`created` DESC),
   KEY `amount_idx` (`amount`)
-) ENGINE=InnoDB AUTO_INCREMENT=92269492 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=93180050 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -780,7 +798,7 @@ CREATE TABLE `SetRegularKey` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=13009 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13092 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -800,7 +818,7 @@ CREATE TABLE `SignerListSet` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=701 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=708 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -820,7 +838,7 @@ CREATE TABLE `TicketCreate` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=134207 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=137034 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -843,7 +861,7 @@ CREATE TABLE `TrustSet` (
   `ledger` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_UNIQUE` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=66207398 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66508150 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -862,7 +880,7 @@ CREATE TABLE `user` (
   `account` varchar(128) NOT NULL,
   PRIMARY KEY (`id`,`account`),
   KEY `id` (`id`,`user_token`,`whale_watch`,`created`,`account`,`token_expires`)
-) ENGINE=InnoDB AUTO_INCREMENT=1292 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1302 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -884,7 +902,7 @@ CREATE TABLE `xumm_payments` (
   `created` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `source` (`source`,`product`,`destination_tag`,`source_tag`,`amount`,`created`)
-) ENGINE=InnoDB AUTO_INCREMENT=245 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -903,7 +921,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`stick`@`%`*/ /*!50106 EVENT `DEXTrades_tracking` ON SCHEDULE EVERY 1 HOUR STARTS '2022-06-22 01:18:35' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Runs dex trades materialized tables inserts' DO CALL DEXTrades_refresh_mv('REFRESH FULL', NULL, @rc) */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`stick`@`%`*/ /*!50106 EVENT `DEXTrades_tracking` ON SCHEDULE EVERY 30 MINUTE STARTS '2022-06-22 04:10:59' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Runs dex trades materialized tables inserts' DO CALL DEXTrades_refresh_mv('REFRESH FULL', NULL, @rc) */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -921,7 +939,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`stick`@`%`*/ /*!50106 EVENT `Payments_gateway_tracking` ON SCHEDULE EVERY 1 HOUR STARTS '2022-06-22 01:19:00' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Runs payment gateway materialized tables inserts' DO CALL Payment_refresh_mgv('REFRESH FULL', NULL, @rc) */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`stick`@`%`*/ /*!50106 EVENT `Payments_gateway_tracking` ON SCHEDULE EVERY 30 MINUTE STARTS '2022-06-22 04:11:20' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Runs payment gateway materialized tables inserts' DO CALL Payment_refresh_mgv('REFRESH FULL', NULL, @rc) */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -939,7 +957,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`stick`@`%`*/ /*!50106 EVENT `Payments_tracking` ON SCHEDULE EVERY 1 HOUR STARTS '2022-06-22 01:18:40' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Runs payment materialized tables inserts' DO CALL Payment_refresh_mv('REFRESH FULL', NULL, @rc) */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`stick`@`%`*/ /*!50106 EVENT `Payments_tracking` ON SCHEDULE EVERY 30 MINUTE STARTS '2022-06-22 04:11:35' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Runs payment materialized tables inserts' DO CALL Payment_refresh_mv('REFRESH FULL', NULL, @rc) */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -973,12 +991,15 @@ IF UPPER(method) = 'REBUILD' THEN
   TRUNCATE TABLE DEXTrades_mvl;
   TRUNCATE TABLE DEXTrades_mv;
 
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
   INSERT INTO DEXTrades_mv
     SELECT base_currency, base_issuer, SUM(volume) as base_volume, quote_issuer, quote_currency, SUM(price * volume) as quote_volume, count(id) as trades, DATE_FORMAT(created, '%Y-%m-%d') as date FROM DEXTrades
         GROUP BY date, base_currency, base_issuer, quote_currency, quote_issuer
         ORDER BY date ASC;
+  COMMIT;
 
 ELSEIF UPPER(method) = 'REFRESH FULL' THEN
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     REPLACE INTO DEXTrades_mv
         SELECT base_currency, base_issuer, SUM(base_volume) AS base_volume, quote_issuer, quote_currency, SUM(quote_volume) AS quote_volume, SUM(trades) AS trades, DATE_FORMAT(created, '%Y-%m-%d') as date
         FROM (
@@ -990,13 +1011,12 @@ ELSEIF UPPER(method) = 'REFRESH FULL' THEN
                 ORDER BY created ASC
         ) v
         GROUP BY date, base_currency, base_issuer, quote_currency, quote_issuer;
-
-    
+  COMMIT;  
     TRUNCATE TABLE DEXTrades_mvl;
 
     SET rc = 0;
 ELSEIF UPPER(method) = 'REFRESH' THEN
-
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     REPLACE INTO DEXTrades_mv
         SELECT base_currency, base_issuer, SUM(base_volume) AS base_volume, quote_issuer, quote_currency, SUM(quote_volume) AS quote_volume, SUM(trades) AS trades, DATE_FORMAT(created, '%Y-%m-%d') as date
         FROM (
@@ -1009,9 +1029,8 @@ ELSEIF UPPER(method) = 'REFRESH' THEN
                 ORDER BY created ASC
         ) v
         GROUP BY date, base_currency, base_issuer, quote_currency, quote_issuer;  
-
     DELETE FROM DEXTrades_mvl WHERE record_ts < ts;
-
+  COMMIT;
     SET rc = 0;
 ELSE
   SET rc = 1;
@@ -1040,11 +1059,15 @@ CREATE DEFINER=`stick`@`%` PROCEDURE `Payment_refresh_mgv`(
 )
 BEGIN
 
+
+
+
 IF UPPER(method) = 'REBUILD' THEN
 
   TRUNCATE TABLE Payment_mgvl;
   TRUNCATE TABLE Payment_mgv;
 
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
   INSERT INTO Payment_mgv
     SELECT COUNT(amount) AS transactions, SUM(amount) AS volume, DATE_FORMAT(Payment.created, '%Y-%m-%d') as date, currency, issuer, GATEWAY_IN.name AS gateway_in, '', 'IN' AS direction FROM Payment 
         JOIN KnownAddresses AS GATEWAY_IN ON (destination = GATEWAY_IN.address)
@@ -1082,8 +1105,9 @@ IF UPPER(method) = 'REBUILD' THEN
         WHERE transaction_result = 'tesSUCCESS'
         AND GATEWAY_IN.name IS NULL
         GROUP BY date, currency, issuer, gateway_out;
-
+  COMMIT;
 ELSEIF UPPER(method) = 'REFRESH FULL' THEN
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     REPLACE INTO Payment_mgv
         SELECT SUM(transactions) AS transactions, SUM(volume) AS volume, DATE_FORMAT(created, '%Y-%m-%d') as created, currency, issuer, gateway_in, gateway_out, direction
         FROM (
@@ -1159,11 +1183,12 @@ ELSEIF UPPER(method) = 'REFRESH FULL' THEN
         ) z
         GROUP BY created, currency, issuer, direction, gateway_in, gateway_out;
     
+    COMMIT;
     TRUNCATE TABLE Payment_mgvl;
 
     SET rc = 0;
 ELSEIF UPPER(method) = 'REFRESH' THEN
-
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     REPLACE INTO Payment_mgv
         SELECT SUM(transactions) AS transactions, SUM(volume) AS volume, DATE_FORMAT(created, '%Y-%m-%d') as created, currency, issuer, gateway_in, gateway_out, direction
         FROM (
@@ -1245,7 +1270,8 @@ ELSEIF UPPER(method) = 'REFRESH' THEN
         GROUP BY created, currency, issuer, direction, gateway_in, gateway_out;
 
     DELETE FROM Payment_mgvl WHERE record_ts < ts;
-
+  COMMIT;
+  
     SET rc = 0;
 ELSE
   SET rc = 1;
@@ -1279,6 +1305,7 @@ IF UPPER(method) = 'REBUILD' THEN
   TRUNCATE TABLE Payment_mvl;
   TRUNCATE TABLE Payment_mv;
 
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
   INSERT INTO Payment_mv
     SELECT COUNT(amount) AS transactions, SUM(amount) AS volume, DATE_FORMAT(Payment.created, '%Y-%m-%d') as date, currency, issuer, 'IN' AS direction FROM Payment 
         JOIN KnownAddresses AS GATEWAY_IN ON (destination = GATEWAY_IN.address)
@@ -1314,8 +1341,10 @@ IF UPPER(method) = 'REBUILD' THEN
         WHERE transaction_result = 'tesSUCCESS'
         AND GATEWAY_IN.name IS NULL
         GROUP BY date, currency, issuer;
-
+  COMMIT;
+  
 ELSEIF UPPER(method) = 'REFRESH FULL' THEN
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     REPLACE INTO Payment_mv
         SELECT SUM(transactions) AS transactions, SUM(volume) AS volume, DATE_FORMAT(created, '%Y-%m-%d') as created, currency, issuer, direction
         FROM (
@@ -1392,10 +1421,10 @@ ELSEIF UPPER(method) = 'REFRESH FULL' THEN
         GROUP BY created, currency, issuer, direction;
     
     TRUNCATE TABLE Payment_mvl;
-
+  COMMIT;
     SET rc = 0;
 ELSEIF UPPER(method) = 'REFRESH' THEN
-
+  SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     REPLACE INTO Payment_mv
         SELECT SUM(transactions) AS transactions, SUM(volume) AS volume, DATE_FORMAT(created, '%Y-%m-%d') as created, currency, issuer, direction
         FROM (
@@ -1475,9 +1504,8 @@ ELSEIF UPPER(method) = 'REFRESH' THEN
                 GROUP BY created, currency, issuer
         ) z
         GROUP BY created, currency, issuer, direction;
-
     DELETE FROM Payment_mvl WHERE record_ts < ts;
-
+  COMMIT;
     SET rc = 0;
 ELSE
   SET rc = 1;
@@ -1499,4 +1527,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-21 21:25:06
+-- Dump completed on 2022-06-23  9:50:36
