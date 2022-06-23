@@ -671,7 +671,7 @@ class test {
 				let issuer = undefined
 
 				if (typeof transaction.metaData.delivered_amount == 'object') {
-					amount = decimal.div(transaction.metaData.delivered_amount.value, '1000000').toFixed()
+					amount = transaction.metaData.delivered_amount.value
 					currency = this.currencyHexToUTF8(transaction.metaData.delivered_amount.currency)
 					currency_hex = transaction.metaData.delivered_amount.currency
 					issuer = transaction.metaData.delivered_amount.issuer
