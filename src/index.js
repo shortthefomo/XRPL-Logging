@@ -29,14 +29,14 @@ class test {
 				})
 			},
 			reTry() {
-				// every 10 min try reinsert failed
+				// every 5 min try reinsert failed
 				setInterval(async () => {
 					while(retry.length > 0) {
 						const retry_query = retry.pop()
 						log('retry_query', retry_query)
 						await db.query(retry_query)
 					}
-				}, 600000)
+				}, 300000)
 			},
 			async backFill() {
 				await client
