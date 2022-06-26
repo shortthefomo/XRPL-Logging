@@ -31,7 +31,7 @@ class test {
 			showState() {
 				setInterval(() => {
 					log('client', client.getState())
-				}, 10_000)
+				}, 100_000)
 			},
 			reTry() {
 				// every 5 min try reinsert failed
