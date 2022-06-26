@@ -4,7 +4,7 @@ const { XrplClient } = require('xrpl-client')
 const dotenv = require('dotenv')
 const debug = require('debug')
 const decimal = require('decimal.js')
-const log = debug('main:test')
+const log = debug('main:logging')
 
 const db = require('./persist/db')
 const { setInterval } = require('timers')
