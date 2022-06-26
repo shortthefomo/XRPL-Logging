@@ -22,7 +22,7 @@ class test {
 		Object.assign(this, {
 			async run() {
 				log('runnig')
-
+				log('client', client.getState())
 				const self = this
 				client.on('ledger', async (event) => {
 					self.getLedger(event, true)
@@ -922,7 +922,11 @@ const main = new test()
 dotenv.config()
 //console.log(process.env.BACKFILL )
 
-if (process.env.MISSING == 'true') {
+if (process.env.MISSING == 'true' && process.env.BACKFILL == 'true') {
+	log('Filling missing ledgers and backfilling!')
+	main.findMissingLedgers()
+	main.backFill()
+} else if (process.env.MISSING == 'true') {
 	log('Filling missing ledgers')
 	main.findMissingLedgers()
 } else if (process.env.BACKFILL == 'true') {
