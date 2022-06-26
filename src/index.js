@@ -22,11 +22,16 @@ class test {
 		Object.assign(this, {
 			async run() {
 				log('runnig')
-				log('client', client.getState())
+				
 				const self = this
 				client.on('ledger', async (event) => {
 					self.getLedger(event, true)
 				})
+			},
+			showState() {
+				setInterval(() => {
+					log('client', client.getState())
+				}, 10_000)
 			},
 			reTry() {
 				// every 5 min try reinsert failed
@@ -938,3 +943,4 @@ if (process.env.MISSING == 'true' && process.env.BACKFILL == 'true') {
 }
 
 main.reTry()
+main.showState()
