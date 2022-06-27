@@ -122,6 +122,8 @@ class test {
 
 				let ledger_result = await client.send(request)
 				
+				if (!('ledger' in ledger_result)) { return }
+				if (!('close_time_human' in ledger_result.ledger)) { return }
 
 				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
 				const unix_time = new Date(timestamp).toISOString().slice(0, 19).replace('T', ' ')
@@ -143,6 +145,9 @@ class test {
 				}
 
 				let ledger_result = await client.send(request)
+				if (!('ledger' in ledger_result)) { return }
+				if (!('close_time_human' in ledger_result.ledger)) { return }
+				
 				const timestamp = Date.parse(ledger_result.ledger.close_time_human)
 				const unix_time = new Date(timestamp).toISOString().slice(0, 19).replace('T', ' ')
 
