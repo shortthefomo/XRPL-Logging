@@ -33,6 +33,15 @@ class test {
 					log('client', client.getState())
 				}, 100_000)
 			},
+			checkState() {
+				setInterval(() => {
+					const state = client.getState()
+					if ( state?.ledger?.last == 0) {
+						log('ledger state', state)
+						client.reinstate({forceNextUplink: true})
+					}
+				}, 5_000)
+			},
 			reTry() {
 				// every 5 min try reinsert failed
 				setInterval(async () => {
@@ -949,3 +958,4 @@ if (process.env.MISSING == 'true' && process.env.BACKFILL == 'true') {
 
 main.reTry()
 main.showState()
+main.checkState()
