@@ -38,7 +38,8 @@ class test {
 					const state = client.getState()
 					if ( state?.ledger?.last == 0) {
 						log('ledger state', state)
-						client.reinstate({forceNextUplink: true})
+						//client.reinstate({forceNextUplink: true})
+						client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
 					}
 				}, 5_000)
 			},
