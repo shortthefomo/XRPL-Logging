@@ -11,14 +11,15 @@ const { setInterval } = require('timers')
 
 class test {
 	constructor() {
-		let client = new XrplClient([process.env.LOCAL_NODE, 'wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'])
+		let client = new XrplClient([process.env.LOCAL_NODE, 'wss://xrplcluster.com', 'wss://s2.ripple.com'])
 		if (process.env.BACKFILL == 'true') {
 			log('using full histroy nodes for back fill.')
-			client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
+			client = new XrplClient(['wss://xrplcluster.com', 'wss://s2.ripple.com'])
 		}
 		let backFillIndex = 0
 		let retry = []
-
+		let network_errors = 0
+		
 		Object.assign(this, {
 			async run() {
 				log('runnig')
@@ -28,20 +29,42 @@ class test {
 					self.getLedger(event, true)
 				})
 			},
-			showState() {
-				setInterval(() => {
-					log('client', client.getState())
-				}, 100_000)
-			},
+			async checkConnection() {
+				const state = client.getState()
+				log('client', state)
+
+				if (state.online == false || state.online == 'false') {
+					client.reinstate({forceNextUplink: true})
+					log('reinstate client', await client.send({ command: 'server_info' }))
+				}
+
+                const books = {
+                    'id': 4,
+                    'command': 'book_offers',
+                    'taker': 'rThREeXrp54XTQueDowPV1RxmkEAGUmg8',
+                    'taker_gets': {'currency': 'USD', 'issuer': 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B' },
+                    'taker_pays': {'currency': 'XRP' },
+                    'limit': 100
+                }
+
+                const result = await client.send(books)
+                if ('error' in result) {
+                    network_errors++
+                    log('error', result.error)
+                }
+			
+                if (network_errors > 10) {
+                    client.reinstate({forceNextUplink: true})
+                    log('reinstate client', await client.send({ command: 'server_info' }))
+                    network_errors = 0
+                }
+                
+            },
 			checkState() {
-				setInterval(() => {
-					const state = client.getState()
-					if ( state?.ledger?.last == 0) {
-						log('ledger state', state)
-						//client.reinstate({forceNextUplink: true})
-						client = new XrplClient(['wss://s2.ripple.com', 'wss://xrplcluster.com'])
-					}
-				}, 5_000)
+				const self = this
+				setInterval(async () => {
+					await self.checkConnection()
+				}, 100_000)
 			},
 			reTry() {
 				// every 5 min try reinsert failed
@@ -339,7 +362,7 @@ class test {
 			},
 			async logNFTokenMint(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenMint')
-				logTx('NFTokenMint')
+				logTx(`NFTokenMint # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -356,7 +379,7 @@ class test {
 			},
 			async logNFTokenCreateOffer(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenCreateOffer')
-				logTx('NFTokenCreateOffer')
+				logTx(`NFTokenCreateOffer # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -373,7 +396,7 @@ class test {
 			},
 			async logNFTokenCancelOffer(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenCancelOffer')
-				logTx('NFTokenCancelOffer')
+				logTx(`NFTokenCancelOffer # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -390,7 +413,7 @@ class test {
 			},
 			async logNFTokenBurn(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenBurn')
-				logTx('NFTokenBurn')
+				logTx(`NFTokenBurn # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -407,7 +430,7 @@ class test {
 			},
 			async logNFTokenAcceptOffer(index, transaction, unix_time) {
 				const logTx = debug('main:NFTokenAcceptOffer')
-				logTx('NFTokenAcceptOffer')
+				logTx(`NFTokenAcceptOffer # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -424,7 +447,7 @@ class test {
 			},
 			async logTicketCreate(index, transaction, unix_time) {
 				const logTx = debug('main:TicketCreate')
-				logTx('TicketCreate')
+				logTx(`TicketCreate # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -441,7 +464,7 @@ class test {
 			},
 			async logSignerListSet(index, transaction, unix_time) {
 				const logTx = debug('main:SignerListSet')
-				logTx('SignerListSet')
+				logTx(`SignerListSet # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -458,7 +481,7 @@ class test {
 			},
 			async logPaymentChannelFund(index, transaction, unix_time) {
 				const logTx = debug('main:PaymentChannelFund')
-				logTx('PaymentChannelFund')
+				logTx(`PaymentChannelFund # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -475,7 +498,7 @@ class test {
 			},
 			async logPaymentChannelCreate(index, transaction, unix_time) {
 				const logTx = debug('main:PaymentChannelCreate')
-				logTx('PaymentChannelCreate')
+				logTx(`PaymentChannelCreate # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -492,7 +515,7 @@ class test {
 			},
 			async logEscrowFinish(index, transaction, unix_time) {
 				const logTx = debug('main:EscrowFinish')
-				logTx('EscrowFinish')
+				logTx(`EscrowFinish # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -509,7 +532,7 @@ class test {
 			},
 			async logEscrowCreate(index, transaction, unix_time) {
 				const logTx = debug('main:EscrowCreate')
-				logTx('EscrowCreate')
+				logTx(`EscrowCreate # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 				const amount = transaction.Amount / 1_000_000
@@ -526,7 +549,7 @@ class test {
 			},
 			async logEscrowCancel(index, transaction, unix_time) {
 				const logTx = debug('main:EscrowCancel')
-				logTx('EscrowCancel')
+				logTx(`EscrowCancel # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -543,7 +566,7 @@ class test {
 			},
 			async logDepositPreauth(index, transaction, unix_time) {
 				const logTx = debug('main:DepositPreauth')
-				logTx('DepositPreauth')
+				logTx(`DepositPreauth # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -560,7 +583,7 @@ class test {
 			},
 			async logCheckCreate(index, transaction, unix_time) {
 				const logTx = debug('main:CheckCreate')
-				logTx('CheckCreate')
+				logTx(`CheckCreate # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -577,7 +600,7 @@ class test {
 			},
 			async logCheckCash(index, transaction, unix_time) {
 				const logTx = debug('main:CheckCash')
-				logTx('CheckCash')
+				logTx(`CheckCash # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -594,7 +617,7 @@ class test {
 			},
 			async logCheckCancel(index, transaction, unix_time) {
 				const logTx = debug('main:CheckCancel')
-				logTx('CheckCancel')
+				logTx(`CheckCancel # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -611,7 +634,7 @@ class test {
 			},
 			async logSetRegularKey(index, transaction, unix_time) {
 				const logTx = debug('main:SetRegularKey')
-				// logTx('SetRegularKey')
+				logTx(`SetRegularKey # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -628,7 +651,7 @@ class test {
 			},
 			async logAccountSet(index, transaction, unix_time) {
 				const logTx = debug('main:accountset')
-				// logTx('AccountSet')
+				logTx(`AccountSet # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -645,7 +668,7 @@ class test {
 			},
 			async logAccountDelete(index, transaction, unix_time) {
 				const logTx = debug('main:AccountDelete')
-				// logTx('AccountDelete')
+				logTx(`AccountDelete # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 
@@ -720,7 +743,7 @@ class test {
 			},
 			async logPaymentChannelClaim(index, transaction, unix_time) {
 				const logTx = debug('main:paymentchannelclaim')
-				logTx('PaymentChannelClaim')
+				logTx(`PaymentChannelClaim # ${transaction.hash}`)
 
 				if (transaction == null) { return }
 			
@@ -958,5 +981,4 @@ if (process.env.MISSING == 'true' && process.env.BACKFILL == 'true') {
 }
 
 main.reTry()
-main.showState()
 main.checkState()
