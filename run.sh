@@ -1,8 +1,4 @@
-#!/usr/bin/env bash
-
-cd "`dirname "$0"`"
-
+#!/bin/bash
+export NODE_ENV=production
 export DEBUG=main*
-
-source ./.env
-node ./src/index.js &> ./log.txt
+pm2 start ./src/index.js --name logging --time

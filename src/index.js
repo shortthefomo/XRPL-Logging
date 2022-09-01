@@ -12,7 +12,7 @@ const { setInterval } = require('timers')
 class test {
 	constructor() {
 		let client = new XrplClient([process.env.LOCAL_NODE, 'wss://xrplcluster.com', 'wss://s2.ripple.com'])
-		if (process.env.BACKFILL == 'true') {
+		if (process.env.BACKFILL == 'true' || process.env.MISSING == 'true') {
 			log('using full histroy nodes for back fill.')
 			client = new XrplClient(['wss://xrplcluster.com', 'wss://s2.ripple.com'])
 		}
