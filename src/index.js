@@ -875,16 +875,17 @@ class test {
 
 					let owner = node.FinalFields.Owner
 					let paid = this.fromLedgerAmount(node.FinalFields.Amount)
-
+					let id = node.NFTokenID
 					const trade = {
+						id,
 						hash,
 						owner,
 						taker,
 						paid
 					}
 					console.log('NFT trade', trade)
-					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (hash, taker, owner, currency, issuer, amount, created, ledger) 
-						VALUES ('${trade.hash}', '${trade.taker}', '${trade.owner}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
+					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades ('NFT id', hash, taker, owner, currency, issuer, amount, created, ledger) 
+						VALUES ('${trade.id}', '${trade.hash}', '${trade.taker}', '${trade.owner}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
 					const rows = await db.query(queryString)
 					if (rows == undefined) {
 						log('SQL Error')
