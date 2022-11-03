@@ -445,7 +445,7 @@ class test {
 					retry.push(queryString)
 				}
 				if (transaction.metaData.TransactionResult == 'tesSUCCESS') {
-					await this.deriveNFTOffer(index, transaction, unix_time)
+					await this.deriveNFTSale(index, transaction, unix_time)
 				}
 			},
 			async logTicketCreate(index, transaction, unix_time) {
@@ -863,7 +863,7 @@ class test {
 					this.deriveExchanges(index, transaction, unix_time)
 				}
 			},
-			async deriveNFTOffer(index, tx, unix_time) {
+			async deriveNFTSale(index, tx, unix_time) {
 				let hash = tx.hash || tx.transaction.hash
 				let taker = tx.Account
 				for(let affected of (tx.meta || tx.metaData).AffectedNodes){
@@ -883,6 +883,16 @@ class test {
 						paid
 					}
 					console.log('NFT trade', trade)
+
+					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (hash, taker, owner, currency, issuer, amount, created, ledger) 
+						VALUES ('${trade.hash}', '${trade.taker}', '${trade.owner}', '${trade.paid.currency}', '${trade.paid.issuer}', '${trade.paid.value}', '${unix_time}', '${index}');`
+					const rows = await db.query(queryString)
+					if (rows == undefined) {
+						log('SQL Error')
+						log(queryString)
+						retry.push(queryString)
+					}
+
 					return trade
 				}
 				return {}
