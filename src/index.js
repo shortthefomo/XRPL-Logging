@@ -444,6 +444,8 @@ class test {
 					log(queryString)
 					retry.push(queryString)
 				}
+
+				await this.deriveNFTOffer(index, transaction, unix_time)
 			},
 			async logTicketCreate(index, transaction, unix_time) {
 				const logTx = debug('main:TicketCreate')
@@ -859,6 +861,30 @@ class test {
 				if (transaction.metaData.TransactionResult == 'tesSUCCESS') {
 					this.deriveExchanges(index, transaction, unix_time)
 				}
+			},
+			async deriveNFTOffer(index, tx, unix_time) {
+				let hash = tx.hash || tx.transaction.hash
+				let taker = tx.Account
+				for(let affected of (tx.meta || tx.metaData).AffectedNodes){
+					let node = affected.ModifiedNode || affected.DeletedNode
+					
+
+					if(!node || node.LedgerEntryType !== 'NFTokenOffer')
+						continue
+
+					let owner = node.FinalFields.Owner
+					let paid = this.fromLedgerAmount(node.FinalFields.Amount)
+
+					const trade = {
+						hash,
+						owner,
+						taker,
+						paid
+					}
+					console.log('NFT trade', trade)
+					return trade
+				}
+				return {}
 			},
 			async deriveExchanges(index, tx, unix_time){
 				let hash = tx.hash || tx.transaction.hash
