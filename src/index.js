@@ -875,7 +875,7 @@ class test {
 
 					let owner = node.FinalFields.Owner
 					let paid = this.fromLedgerAmount(node.FinalFields.Amount)
-					let id = node.NFTokenID
+					let id = node.FinalFields.NFTokenID
 					const trade = {
 						id,
 						hash,
