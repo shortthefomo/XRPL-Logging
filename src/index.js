@@ -444,8 +444,9 @@ class test {
 					log(queryString)
 					retry.push(queryString)
 				}
-
-				await this.deriveNFTOffer(index, transaction, unix_time)
+				if (transaction.metaData.TransactionResult == 'tesSUCCESS') {
+					await this.deriveNFTOffer(index, transaction, unix_time)
+				}
 			},
 			async logTicketCreate(index, transaction, unix_time) {
 				const logTx = debug('main:TicketCreate')
