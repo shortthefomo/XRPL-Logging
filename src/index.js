@@ -884,7 +884,7 @@ class test {
 					}
 					console.log('NFT trade', trade)
 					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (hash, taker, owner, currency, issuer, amount, created, ledger) 
-						VALUES ('${trade.hash}', '${trade.taker}', '${trade.owner}', '${trade.paid.currency}', '${trade.paid?.issuer}', '${trade.paid.value}', '${unix_time}', '${index}');`
+						VALUES ('${trade.hash}', '${trade.taker}', '${trade.owner}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
 					const rows = await db.query(queryString)
 					if (rows == undefined) {
 						log('SQL Error')
