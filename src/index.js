@@ -874,6 +874,10 @@ class test {
 					if(!node || node.LedgerEntryType !== 'NFTokenOffer')
 						continue
 
+					// brokered transactions have multiple NFTokenOffer's we only interested in the one with destination
+					if(!('Destination' in node.FinalFields))
+						continue
+
 					let owner = node.FinalFields.Owner
 					let paid = this.fromLedgerAmount(node.FinalFields.Amount)
 					let id = node.FinalFields.NFTokenID
@@ -1023,3 +1027,7 @@ if (process.env.MISSING == 'true' && process.env.BACKFILL == 'true') {
 
 main.reTry()
 main.checkState()
+
+
+// NFT FIx fetch
+//75443460-75514331
