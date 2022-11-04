@@ -119,6 +119,7 @@ class test {
 					) AS z
 				WHERE z.got!=0;`)
 				if (rows == undefined) {
+					console.log('no rows exit')
 					return false
 				}
 				// throw away 1 to ..... as we not fetching everything here.
@@ -882,6 +883,9 @@ class test {
 						owner,
 						taker,
 						paid
+					}
+					if ('currency' in trade.paid) {
+						trade.paid.currency = this.currencyHexToUTF8(trade.paid.currency)
 					}
 					console.log('NFT trade', trade)
 					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (NFTokenID, hash, taker, owner, currency, issuer, amount, created, ledger) 
