@@ -874,8 +874,7 @@ class test {
 					if(!node || node.LedgerEntryType !== 'NFTokenOffer')
 						continue
 
-					// brokered transactions have multiple NFTokenOffer's we only interested in the one with destination
-					if(!('Destination' in node.FinalFields))
+					if(!node.FinalFields.Destination)
 						continue
 
 					let owner = node.FinalFields.Owner
