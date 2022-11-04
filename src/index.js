@@ -873,10 +873,10 @@ class test {
 
 					if(!node || node.LedgerEntryType !== 'NFTokenOffer')
 						continue
-
-					if(!node.FinalFields.Destination)
+				
+					if(node.LedgerIndex !== transaction.NFTokenSellOffer)
 						continue
-
+						
 					let owner = node.FinalFields.Owner
 					let paid = this.fromLedgerAmount(node.FinalFields.Amount)
 					let id = node.FinalFields.NFTokenID
