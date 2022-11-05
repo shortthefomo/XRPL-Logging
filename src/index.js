@@ -11,11 +11,11 @@ const { setInterval } = require('timers')
 
 class test {
 	constructor() {
-		let client = new XrplClient(process.env.LOCAL_NODE)
-		// if (process.env.BACKFILL == 'true' || process.env.MISSING == 'true') {
-		// 	log('using full histroy nodes for back fill.')
-		// 	client = new XrplClient(['wss://xrplcluster.com', 'wss://s2.ripple.com'])
-		// }
+		let client = new XrplClient([process.env.LOCAL_NODE, 'wss://xrplcluster.com', 'wss://s2.ripple.com'])
+		if (process.env.BACKFILL == 'true' || process.env.MISSING == 'true') {
+			log('using full histroy nodes for back fill.')
+			client = new XrplClient(['wss://xrplcluster.com', 'wss://s2.ripple.com'])
+		}
 		let backFillIndex = 0
 		let retry = []
 		let network_errors = 0
@@ -1064,5 +1064,5 @@ main.checkState()
 // main.test('C9DC04F4137791B7447617D6D951ABDB83537C6DE94277B7B8D446B686438373')
 
 
-//main.test(75443458, 75537741)
+//main.test(75443458, 75538924)
 // NFT FIX 75443458 -> 75537741 75537741
