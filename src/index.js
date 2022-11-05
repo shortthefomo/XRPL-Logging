@@ -11,11 +11,11 @@ const { setInterval } = require('timers')
 
 class test {
 	constructor() {
-		let client = new XrplClient([process.env.LOCAL_NODE, 'wss://xrplcluster.com', 'wss://s2.ripple.com'])
-		if (process.env.BACKFILL == 'true' || process.env.MISSING == 'true') {
-			log('using full histroy nodes for back fill.')
-			client = new XrplClient(['wss://xrplcluster.com', 'wss://s2.ripple.com'])
-		}
+		let client = new XrplClient(process.env.LOCAL_NODE)
+		// if (process.env.BACKFILL == 'true' || process.env.MISSING == 'true') {
+		// 	log('using full histroy nodes for back fill.')
+		// 	client = new XrplClient(['wss://xrplcluster.com', 'wss://s2.ripple.com'])
+		// }
 		let backFillIndex = 0
 		let retry = []
 		let network_errors = 0
@@ -194,19 +194,29 @@ class test {
 					this.updateBalances(ledger_result.ledger.transactions)
 				}
 			},
-			async test(hash) {
-				let request = {
-					"id": 1,
-					"command": "tx",
-					"transaction": hash,
-					"binary": false
-				  }
-
-				let ledger_result = await client.send(request)
-				
-				
-				console.log('ledger_result', ledger_result)
-				await this.deriveNFTSale(1, ledger_result, new Date().toISOString().slice(0, 19).replace('T', ' '), false)
+			async test(index, stop) {
+				while (index < stop) {
+					let request = {
+						'id': 'xrpl-backfill',
+						'command': 'ledger',
+						'ledger_index': index,
+						'transactions': true,
+						'expand': true,
+						'owner_funds': true
+					}
+	
+					let result = await client.send(request)
+					console.log('NFT FIX', index)
+					for (let i = 0; i < result.ledger.transactions.length; i++) {
+						const transaction = result.ledger.transactions[i]
+						// log('transaction', transaction.TransactionType)
+						if (transaction.TransactionType == 'NFTokenAcceptOffer') {
+							// console.log('deriveNFTSale', ledger_result)
+							await this.deriveNFTSale(index, transaction, new Date().toISOString().slice(0, 19).replace('T', ' '), true)
+						}
+					}
+					index++
+				}
 			},
 			updateBalances(transactions) {
 				for (let i = 0; i < transactions.length; i++) {
@@ -909,19 +919,21 @@ class test {
 					if ('currency' in trade.paid) {
 						trade.paid.currency = this.currencyHexToUTF8(trade.paid.currency)
 					}
-					
-					if (persist) {
-						let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (NFTokenID, hash, taker, maker, destination, currency, issuer, amount, created, ledger) 
-							VALUES ('${trade.id}', '${trade.hash}', '${trade.taker}', '${trade.maker}', '${trade.destination}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
-						const rows = await db.query(queryString)
-						if (rows == undefined) {
-							log('SQL Error')
-							log(queryString)
-							retry.push(queryString)
-						}
+				}
+				if (trade.paid?.value > 0) {
+					console.log('NFT trade', trade)
+				}
+
+				if (persist && trade.paid?.value > 0) {
+					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (NFTokenID, hash, taker, maker, destination, currency, issuer, amount, created, ledger) 
+						VALUES ('${trade.id}', '${trade.hash}', '${trade.taker}', '${trade.maker}', '${trade.destination}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
+					const rows = await db.query(queryString)
+					if (rows == undefined) {
+						log('SQL Error')
+						log(queryString)
+						retry.push(queryString)
 					}
 				}
-				console.log('NFT trade', trade)
 				return trade
 			},
 			async deriveExchanges(index, tx, unix_time){
@@ -1050,3 +1062,7 @@ main.checkState()
 
 // main.test('988FEF3D40906B40BF30E541ABC3E69D8BC4D924C5CD9E0B432B3BBBF4A6D2A3')
 // main.test('C9DC04F4137791B7447617D6D951ABDB83537C6DE94277B7B8D446B686438373')
+
+
+//main.test(75443458, 75537741)
+// NFT FIX 75443458 -> 75537741 75537741
