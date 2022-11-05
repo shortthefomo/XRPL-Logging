@@ -912,7 +912,7 @@ class test {
 					
 					if (persist) {
 						let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (NFTokenID, hash, taker, maker, destination, currency, issuer, amount, created, ledger) 
-							VALUES ('${trade.id}', '${trade.hash}', '${trade.destination}', '${trade.maker}', '${trade.destination}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
+							VALUES ('${trade.id}', '${trade.hash}', '${trade.taker}', '${trade.maker}', '${trade.destination}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
 						const rows = await db.query(queryString)
 						if (rows == undefined) {
 							log('SQL Error')
