@@ -194,6 +194,20 @@ class test {
 					this.updateBalances(ledger_result.ledger.transactions)
 				}
 			},
+			async test(hash) {
+				let request = {
+					"id": 1,
+					"command": "tx",
+					"transaction": hash,
+					"binary": false
+				  }
+
+				let ledger_result = await client.send(request)
+				
+				
+				console.log('ledger_result', ledger_result)
+				await this.deriveNFTSale(1, ledger_result, new Date().toISOString().slice(0, 19).replace('T', ' '), false)
+			},
 			updateBalances(transactions) {
 				for (let i = 0; i < transactions.length; i++) {
 					const transaction = transactions[i]
@@ -864,42 +878,51 @@ class test {
 					this.deriveExchanges(index, transaction, unix_time)
 				}
 			},
-			async deriveNFTSale(index, tx, unix_time) {
+			async deriveNFTSale(index, tx, unix_time, persist = true) {
 				let hash = tx.hash || tx.transaction.hash
+				let trade = {}
 				let taker = tx.Account
-				for(let affected of (tx.meta || tx.metaData).AffectedNodes){
-					let node = affected.ModifiedNode || affected.DeletedNode
-					
+				for (let affected of (tx.meta || tx.metaData).AffectedNodes) {
+					let node = affected.DeletedNode
 
-					if(!node || node.LedgerEntryType !== 'NFTokenOffer')
+					if (!node || node.LedgerEntryType !== 'NFTokenOffer')
 						continue
 
-					let owner = node.FinalFields.Owner
+					let destination = node.FinalFields.Destination || tx.Account
+					let maker = node.FinalFields.Owner
 					let paid = this.fromLedgerAmount(node.FinalFields.Amount)
 					let id = node.FinalFields.NFTokenID
-					const trade = {
+					trade = {
 						id,
 						hash,
-						owner,
 						taker,
+						maker,
+						destination,
 						paid
 					}
+
+					if (!node.FinalFields.Destination) {
+						taker = node.FinalFields.Owner
+						continue
+					}
+
 					if ('currency' in trade.paid) {
 						trade.paid.currency = this.currencyHexToUTF8(trade.paid.currency)
 					}
-					console.log('NFT trade', trade)
-					let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (NFTokenID, hash, taker, owner, currency, issuer, amount, created, ledger) 
-						VALUES ('${trade.id}', '${trade.hash}', '${trade.taker}', '${trade.owner}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
-					const rows = await db.query(queryString)
-					if (rows == undefined) {
-						log('SQL Error')
-						log(queryString)
-						retry.push(queryString)
+					
+					if (persist) {
+						let queryString = `INSERT HIGH_PRIORITY INTO NFTTrades (NFTokenID, hash, taker, maker, destination, currency, issuer, amount, created, ledger) 
+							VALUES ('${trade.id}', '${trade.hash}', '${trade.destination}', '${trade.maker}', '${trade.destination}', '${trade.paid?.currency}', '${trade.paid?.issuer}', '${trade.paid?.value}', '${unix_time}', '${index}');`
+						const rows = await db.query(queryString)
+						if (rows == undefined) {
+							log('SQL Error')
+							log(queryString)
+							retry.push(queryString)
+						}
 					}
-
-					return trade
 				}
-				return {}
+				console.log('NFT trade', trade)
+				return trade
 			},
 			async deriveExchanges(index, tx, unix_time){
 				let hash = tx.hash || tx.transaction.hash
@@ -1025,5 +1048,5 @@ main.reTry()
 main.checkState()
 
 
-// NFT FIx fetch
-//75443460-75514331
+// main.test('988FEF3D40906B40BF30E541ABC3E69D8BC4D924C5CD9E0B432B3BBBF4A6D2A3')
+// main.test('C9DC04F4137791B7447617D6D951ABDB83537C6DE94277B7B8D446B686438373')
